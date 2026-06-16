@@ -1,0 +1,871 @@
+(node:14284) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+[1m[31mDatabricks authentication failed.[39m[22m
+
+[33mLog in with the Databricks CLI (for example, databricks auth login for this workspace), then try again.[39m
+
+[2mOr set DATABRICKS_TOKEN and DATABRICKS_HOST instead of CLI-based auth.[22m
+
+[32mDATABRICKS_HOST[39m: (not set)
+[32mDATABRICKS_WAREHOUSE_ID[39m: 7f7ea1dd7789d52f
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+Error [TransformError]: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:440:11)
+    at Object.spawn (node:child_process:797:9)
+    at ensureServiceIsRunning (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1978:29)
+    at transform (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1878:37)
+    at file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2865
+    at applyTransformers (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:1266)
+    at transform (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2812)
+    at load (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/esm/index.mjs?1781546946965:2:2348)
+    at async nextLoad (node:internal/modules/esm/hooks:769:22)
+    at async AsyncLoaderHooksOnLoaderHookWorker.load (node:internal/modules/esm/hooks:406:20) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'spawn'
+}
+
+Node.js v26.3.0
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+Error [TransformError]: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:440:11)
+    at Object.spawn (node:child_process:797:9)
+    at ensureServiceIsRunning (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1978:29)
+    at transform (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1878:37)
+    at file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2865
+    at applyTransformers (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:1266)
+    at transform (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2812)
+    at load (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/esm/index.mjs?1781547554579:2:2348)
+    at async nextLoad (node:internal/modules/esm/hooks:769:22)
+    at async AsyncLoaderHooksOnLoaderHookWorker.load (node:internal/modules/esm/hooks:406:20) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'spawn'
+}
+
+Node.js v26.3.0
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+Error [TransformError]: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:440:11)
+    at Object.spawn (node:child_process:797:9)
+    at ensureServiceIsRunning (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1978:29)
+    at transform (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1878:37)
+    at file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2865
+    at applyTransformers (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:1266)
+    at transform (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2812)
+    at load (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/esm/index.mjs?1781548724366:2:2348)
+    at async nextLoad (node:internal/modules/esm/hooks:769:22)
+    at async AsyncLoaderHooksOnLoaderHookWorker.load (node:internal/modules/esm/hooks:406:20) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'spawn'
+}
+
+Node.js v26.3.0
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+Error [TransformError]: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:440:11)
+    at Object.spawn (node:child_process:797:9)
+    at ensureServiceIsRunning (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1978:29)
+    at transform (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1878:37)
+    at file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2865
+    at applyTransformers (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:1266)
+    at transform (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2812)
+    at load (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/esm/index.mjs?1781548746772:2:2348)
+    at async nextLoad (node:internal/modules/esm/hooks:769:22)
+    at async AsyncLoaderHooksOnLoaderHookWorker.load (node:internal/modules/esm/hooks:406:20) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'spawn'
+}
+
+Node.js v26.3.0
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+Error [TransformError]: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:440:11)
+    at Object.spawn (node:child_process:797:9)
+    at ensureServiceIsRunning (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1978:29)
+    at transform (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1878:37)
+    at file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2865
+    at applyTransformers (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:1266)
+    at transform (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2812)
+    at load (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/esm/index.mjs?1781548837925:2:2348)
+    at async nextLoad (node:internal/modules/esm/hooks:769:22)
+    at async AsyncLoaderHooksOnLoaderHookWorker.load (node:internal/modules/esm/hooks:406:20) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'spawn'
+}
+
+Node.js v26.3.0
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+Error [TransformError]: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:440:11)
+    at Object.spawn (node:child_process:797:9)
+    at ensureServiceIsRunning (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1978:29)
+    at transform (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1878:37)
+    at file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2865
+    at applyTransformers (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:1266)
+    at transform (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2812)
+    at load (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/esm/index.mjs?1781548926163:2:2348)
+    at async nextLoad (node:internal/modules/esm/hooks:769:22)
+    at async AsyncLoaderHooksOnLoaderHookWorker.load (node:internal/modules/esm/hooks:406:20) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'spawn'
+}
+
+Node.js v26.3.0
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+Error [TransformError]: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:440:11)
+    at Object.spawn (node:child_process:797:9)
+    at ensureServiceIsRunning (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1978:29)
+    at transform (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1878:37)
+    at file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2865
+    at applyTransformers (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:1266)
+    at transform (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2812)
+    at load (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/esm/index.mjs?1781549871097:2:2348)
+    at async nextLoad (node:internal/modules/esm/hooks:769:22)
+    at async AsyncLoaderHooksOnLoaderHookWorker.load (node:internal/modules/esm/hooks:406:20) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'spawn'
+}
+
+Node.js v26.3.0
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+Error [TransformError]: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:440:11)
+    at Object.spawn (node:child_process:797:9)
+    at ensureServiceIsRunning (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1978:29)
+    at transform (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1878:37)
+    at file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2865
+    at applyTransformers (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:1266)
+    at transform (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2812)
+    at load (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/esm/index.mjs?1781556918803:2:2348)
+    at async nextLoad (node:internal/modules/esm/hooks:769:22)
+    at async AsyncLoaderHooksOnLoaderHookWorker.load (node:internal/modules/esm/hooks:406:20) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'spawn'
+}
+
+Node.js v26.3.0
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+Error [TransformError]: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:440:11)
+    at Object.spawn (node:child_process:797:9)
+    at ensureServiceIsRunning (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1978:29)
+    at transform (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1878:37)
+    at file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2865
+    at applyTransformers (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:1266)
+    at transform (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2812)
+    at load (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/esm/index.mjs?1781557048488:2:2348)
+    at async nextLoad (node:internal/modules/esm/hooks:769:22)
+    at async AsyncLoaderHooksOnLoaderHookWorker.load (node:internal/modules/esm/hooks:406:20) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'spawn'
+}
+
+Node.js v26.3.0
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+Error [TransformError]: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:440:11)
+    at Object.spawn (node:child_process:797:9)
+    at ensureServiceIsRunning (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1978:29)
+    at transform (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1878:37)
+    at file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2865
+    at applyTransformers (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:1266)
+    at transform (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2812)
+    at load (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/esm/index.mjs?1781558276506:2:2348)
+    at async nextLoad (node:internal/modules/esm/hooks:769:22)
+    at async AsyncLoaderHooksOnLoaderHookWorker.load (node:internal/modules/esm/hooks:406:20) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'spawn'
+}
+
+Node.js v26.3.0
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+Error [TransformError]: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:440:11)
+    at Object.spawn (node:child_process:797:9)
+    at ensureServiceIsRunning (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1978:29)
+    at transform (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1878:37)
+    at file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2865
+    at applyTransformers (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:1266)
+    at transform (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2812)
+    at load (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/esm/index.mjs?1781558309047:2:2348)
+    at async nextLoad (node:internal/modules/esm/hooks:769:22)
+    at async AsyncLoaderHooksOnLoaderHookWorker.load (node:internal/modules/esm/hooks:406:20) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'spawn'
+}
+
+Node.js v26.3.0
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+Error [TransformError]: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:440:11)
+    at Object.spawn (node:child_process:797:9)
+    at ensureServiceIsRunning (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1978:29)
+    at transform (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1878:37)
+    at file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2865
+    at applyTransformers (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:1266)
+    at transform (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2812)
+    at load (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/esm/index.mjs?1781558316437:2:2348)
+    at async nextLoad (node:internal/modules/esm/hooks:769:22)
+    at async AsyncLoaderHooksOnLoaderHookWorker.load (node:internal/modules/esm/hooks:406:20) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'spawn'
+}
+
+Node.js v26.3.0
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+Error [TransformError]: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:440:11)
+    at Object.spawn (node:child_process:797:9)
+    at ensureServiceIsRunning (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1978:29)
+    at transform (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1878:37)
+    at file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2865
+    at applyTransformers (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:1266)
+    at transform (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2812)
+    at load (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/esm/index.mjs?1781558843398:2:2348)
+    at async nextLoad (node:internal/modules/esm/hooks:769:22)
+    at async AsyncLoaderHooksOnLoaderHookWorker.load (node:internal/modules/esm/hooks:406:20) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'spawn'
+}
+
+Node.js v26.3.0
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+Error [TransformError]: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:440:11)
+    at Object.spawn (node:child_process:797:9)
+    at ensureServiceIsRunning (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1978:29)
+    at transform (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1878:37)
+    at file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2865
+    at applyTransformers (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:1266)
+    at transform (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2812)
+    at load (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/esm/index.mjs?1781558848044:2:2348)
+    at async nextLoad (node:internal/modules/esm/hooks:769:22)
+    at async AsyncLoaderHooksOnLoaderHookWorker.load (node:internal/modules/esm/hooks:406:20) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'spawn'
+}
+
+Node.js v26.3.0
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+Error [TransformError]: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:440:11)
+    at Object.spawn (node:child_process:797:9)
+    at ensureServiceIsRunning (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1978:29)
+    at transform (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1878:37)
+    at file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2865
+    at applyTransformers (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:1266)
+    at transform (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2812)
+    at load (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/esm/index.mjs?1781559227587:2:2348)
+    at async nextLoad (node:internal/modules/esm/hooks:769:22)
+    at async AsyncLoaderHooksOnLoaderHookWorker.load (node:internal/modules/esm/hooks:406:20) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'spawn'
+}
+
+Node.js v26.3.0
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+Error [TransformError]: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:440:11)
+    at Object.spawn (node:child_process:797:9)
+    at ensureServiceIsRunning (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1978:29)
+    at transform (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1878:37)
+    at file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2865
+    at applyTransformers (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:1266)
+    at transform (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2812)
+    at load (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/esm/index.mjs?1781559250343:2:2348)
+    at async nextLoad (node:internal/modules/esm/hooks:769:22)
+    at async AsyncLoaderHooksOnLoaderHookWorker.load (node:internal/modules/esm/hooks:406:20) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'spawn'
+}
+
+Node.js v26.3.0
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+Error [TransformError]: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:440:11)
+    at Object.spawn (node:child_process:797:9)
+    at ensureServiceIsRunning (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1978:29)
+    at transform (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1878:37)
+    at file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2865
+    at applyTransformers (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:1266)
+    at transform (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2812)
+    at load (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/esm/index.mjs?1781559255714:2:2348)
+    at async nextLoad (node:internal/modules/esm/hooks:769:22)
+    at async AsyncLoaderHooksOnLoaderHookWorker.load (node:internal/modules/esm/hooks:406:20) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'spawn'
+}
+
+Node.js v26.3.0
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+Error [TransformError]: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:440:11)
+    at Object.spawn (node:child_process:797:9)
+    at ensureServiceIsRunning (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1978:29)
+    at transform (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1878:37)
+    at file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2865
+    at applyTransformers (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:1266)
+    at transform (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2812)
+    at load (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/esm/index.mjs?1781559263140:2:2348)
+    at async nextLoad (node:internal/modules/esm/hooks:769:22)
+    at async AsyncLoaderHooksOnLoaderHookWorker.load (node:internal/modules/esm/hooks:406:20) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'spawn'
+}
+
+Node.js v26.3.0
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+Error [TransformError]: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:440:11)
+    at Object.spawn (node:child_process:797:9)
+    at ensureServiceIsRunning (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1978:29)
+    at transform (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1878:37)
+    at file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2865
+    at applyTransformers (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:1266)
+    at transform (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2812)
+    at load (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/esm/index.mjs?1781559280107:2:2348)
+    at async nextLoad (node:internal/modules/esm/hooks:769:22)
+    at async AsyncLoaderHooksOnLoaderHookWorker.load (node:internal/modules/esm/hooks:406:20) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'spawn'
+}
+
+Node.js v26.3.0
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+Error [TransformError]: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:440:11)
+    at Object.spawn (node:child_process:797:9)
+    at ensureServiceIsRunning (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1978:29)
+    at transform (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1878:37)
+    at file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2865
+    at applyTransformers (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:1266)
+    at transform (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2812)
+    at load (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/esm/index.mjs?1781559310851:2:2348)
+    at async nextLoad (node:internal/modules/esm/hooks:769:22)
+    at async AsyncLoaderHooksOnLoaderHookWorker.load (node:internal/modules/esm/hooks:406:20) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'spawn'
+}
+
+Node.js v26.3.0
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+Error [TransformError]: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:440:11)
+    at Object.spawn (node:child_process:797:9)
+    at ensureServiceIsRunning (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1978:29)
+    at transform (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1878:37)
+    at file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2865
+    at applyTransformers (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:1266)
+    at transform (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2812)
+    at load (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/esm/index.mjs?1781559328528:2:2348)
+    at async nextLoad (node:internal/modules/esm/hooks:769:22)
+    at async AsyncLoaderHooksOnLoaderHookWorker.load (node:internal/modules/esm/hooks:406:20) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'spawn'
+}
+
+Node.js v26.3.0
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+Error [TransformError]: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:440:11)
+    at Object.spawn (node:child_process:797:9)
+    at ensureServiceIsRunning (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1978:29)
+    at transform (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1878:37)
+    at file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2865
+    at applyTransformers (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:1266)
+    at transform (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2812)
+    at load (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/esm/index.mjs?1781560043866:2:2348)
+    at async nextLoad (node:internal/modules/esm/hooks:769:22)
+    at async AsyncLoaderHooksOnLoaderHookWorker.load (node:internal/modules/esm/hooks:406:20) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'spawn'
+}
+
+Node.js v26.3.0
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+Error [TransformError]: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:440:11)
+    at Object.spawn (node:child_process:797:9)
+    at ensureServiceIsRunning (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1978:29)
+    at transform (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1878:37)
+    at file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2865
+    at applyTransformers (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:1266)
+    at transform (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2812)
+    at load (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/esm/index.mjs?1781560059827:2:2348)
+    at async nextLoad (node:internal/modules/esm/hooks:769:22)
+    at async AsyncLoaderHooksOnLoaderHookWorker.load (node:internal/modules/esm/hooks:406:20) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'spawn'
+}
+
+Node.js v26.3.0
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+Error [TransformError]: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:440:11)
+    at Object.spawn (node:child_process:797:9)
+    at ensureServiceIsRunning (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1978:29)
+    at transform (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1878:37)
+    at file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2865
+    at applyTransformers (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:1266)
+    at transform (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2812)
+    at load (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/esm/index.mjs?1781560064057:2:2348)
+    at async nextLoad (node:internal/modules/esm/hooks:769:22)
+    at async AsyncLoaderHooksOnLoaderHookWorker.load (node:internal/modules/esm/hooks:406:20) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'spawn'
+}
+
+Node.js v26.3.0
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+Error [TransformError]: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:440:11)
+    at Object.spawn (node:child_process:797:9)
+    at ensureServiceIsRunning (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1978:29)
+    at transform (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1878:37)
+    at file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2865
+    at applyTransformers (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:1266)
+    at transform (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2812)
+    at load (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/esm/index.mjs?1781563116517:2:2348)
+    at async nextLoad (node:internal/modules/esm/hooks:769:22)
+    at async AsyncLoaderHooksOnLoaderHookWorker.load (node:internal/modules/esm/hooks:406:20) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'spawn'
+}
+
+Node.js v26.3.0
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+Error [TransformError]: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:440:11)
+    at Object.spawn (node:child_process:797:9)
+    at ensureServiceIsRunning (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1978:29)
+    at transform (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1878:37)
+    at file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2865
+    at applyTransformers (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:1266)
+    at transform (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2812)
+    at load (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/esm/index.mjs?1781563125098:2:2348)
+    at async nextLoad (node:internal/modules/esm/hooks:769:22)
+    at async AsyncLoaderHooksOnLoaderHookWorker.load (node:internal/modules/esm/hooks:406:20) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'spawn'
+}
+
+Node.js v26.3.0
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+Error [TransformError]: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:440:11)
+    at Object.spawn (node:child_process:797:9)
+    at ensureServiceIsRunning (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1978:29)
+    at transform (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1878:37)
+    at file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2865
+    at applyTransformers (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:1266)
+    at transform (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2812)
+    at load (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/esm/index.mjs?1781563148117:2:2348)
+    at async nextLoad (node:internal/modules/esm/hooks:769:22)
+    at async AsyncLoaderHooksOnLoaderHookWorker.load (node:internal/modules/esm/hooks:406:20) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'spawn'
+}
+
+Node.js v26.3.0
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+Error [TransformError]: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:440:11)
+    at Object.spawn (node:child_process:797:9)
+    at ensureServiceIsRunning (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1978:29)
+    at transform (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1878:37)
+    at file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2865
+    at applyTransformers (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:1266)
+    at transform (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2812)
+    at load (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/esm/index.mjs?1781563300606:2:2348)
+    at async nextLoad (node:internal/modules/esm/hooks:769:22)
+    at async AsyncLoaderHooksOnLoaderHookWorker.load (node:internal/modules/esm/hooks:406:20) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'spawn'
+}
+
+Node.js v26.3.0
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+Error [TransformError]: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:440:11)
+    at Object.spawn (node:child_process:797:9)
+    at ensureServiceIsRunning (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1978:29)
+    at transform (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1878:37)
+    at file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2865
+    at applyTransformers (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:1266)
+    at transform (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2812)
+    at load (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/esm/index.mjs?1781563642896:2:2348)
+    at async nextLoad (node:internal/modules/esm/hooks:769:22)
+    at async AsyncLoaderHooksOnLoaderHookWorker.load (node:internal/modules/esm/hooks:406:20) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'spawn'
+}
+
+Node.js v26.3.0
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+Error [TransformError]: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:440:11)
+    at Object.spawn (node:child_process:797:9)
+    at ensureServiceIsRunning (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1978:29)
+    at transform (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1878:37)
+    at file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2865
+    at applyTransformers (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:1266)
+    at transform (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2812)
+    at load (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/esm/index.mjs?1781563648173:2:2348)
+    at async nextLoad (node:internal/modules/esm/hooks:769:22)
+    at async AsyncLoaderHooksOnLoaderHookWorker.load (node:internal/modules/esm/hooks:406:20) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'spawn'
+}
+
+Node.js v26.3.0
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+Error [TransformError]: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:440:11)
+    at Object.spawn (node:child_process:797:9)
+    at ensureServiceIsRunning (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1978:29)
+    at transform (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1878:37)
+    at file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2865
+    at applyTransformers (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:1266)
+    at transform (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2812)
+    at load (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/esm/index.mjs?1781563661192:2:2348)
+    at async nextLoad (node:internal/modules/esm/hooks:769:22)
+    at async AsyncLoaderHooksOnLoaderHookWorker.load (node:internal/modules/esm/hooks:406:20) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'spawn'
+}
+
+Node.js v26.3.0
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+Error [TransformError]: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:440:11)
+    at Object.spawn (node:child_process:797:9)
+    at ensureServiceIsRunning (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1978:29)
+    at transform (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1878:37)
+    at file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2865
+    at applyTransformers (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:1266)
+    at transform (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2812)
+    at load (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/esm/index.mjs?1781563667435:2:2348)
+    at async nextLoad (node:internal/modules/esm/hooks:769:22)
+    at async AsyncLoaderHooksOnLoaderHookWorker.load (node:internal/modules/esm/hooks:406:20) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'spawn'
+}
+
+Node.js v26.3.0
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+Error [TransformError]: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:440:11)
+    at Object.spawn (node:child_process:797:9)
+    at ensureServiceIsRunning (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1978:29)
+    at transform (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1878:37)
+    at file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2865
+    at applyTransformers (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:1266)
+    at transform (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2812)
+    at load (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/esm/index.mjs?1781563711945:2:2348)
+    at async nextLoad (node:internal/modules/esm/hooks:769:22)
+    at async AsyncLoaderHooksOnLoaderHookWorker.load (node:internal/modules/esm/hooks:406:20) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'spawn'
+}
+
+Node.js v26.3.0
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+Error [TransformError]: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:440:11)
+    at Object.spawn (node:child_process:797:9)
+    at ensureServiceIsRunning (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1978:29)
+    at transform (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1878:37)
+    at file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2865
+    at applyTransformers (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:1266)
+    at transform (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2812)
+    at load (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/esm/index.mjs?1781563718521:2:2348)
+    at async nextLoad (node:internal/modules/esm/hooks:769:22)
+    at async AsyncLoaderHooksOnLoaderHookWorker.load (node:internal/modules/esm/hooks:406:20) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'spawn'
+}
+
+Node.js v26.3.0
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+Error [TransformError]: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:440:11)
+    at Object.spawn (node:child_process:797:9)
+    at ensureServiceIsRunning (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1978:29)
+    at transform (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1878:37)
+    at file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2865
+    at applyTransformers (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:1266)
+    at transform (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2812)
+    at load (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/esm/index.mjs?1781563723390:2:2348)
+    at async nextLoad (node:internal/modules/esm/hooks:769:22)
+    at async AsyncLoaderHooksOnLoaderHookWorker.load (node:internal/modules/esm/hooks:406:20) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'spawn'
+}
+
+Node.js v26.3.0
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+Error [TransformError]: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:440:11)
+    at Object.spawn (node:child_process:797:9)
+    at ensureServiceIsRunning (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1978:29)
+    at transform (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1878:37)
+    at file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2865
+    at applyTransformers (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:1266)
+    at transform (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2812)
+    at load (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/esm/index.mjs?1781563985526:2:2348)
+    at async nextLoad (node:internal/modules/esm/hooks:769:22)
+    at async AsyncLoaderHooksOnLoaderHookWorker.load (node:internal/modules/esm/hooks:406:20) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'spawn'
+}
+
+Node.js v26.3.0
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+Error [TransformError]: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:440:11)
+    at Object.spawn (node:child_process:797:9)
+    at ensureServiceIsRunning (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1978:29)
+    at transform (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1878:37)
+    at file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2865
+    at applyTransformers (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:1266)
+    at transform (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2812)
+    at load (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/esm/index.mjs?1781623458271:2:2348)
+    at async nextLoad (node:internal/modules/esm/hooks:769:22)
+    at async AsyncLoaderHooksOnLoaderHookWorker.load (node:internal/modules/esm/hooks:406:20) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'spawn'
+}
+
+Node.js v26.3.0
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+Error [TransformError]: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:440:11)
+    at Object.spawn (node:child_process:797:9)
+    at ensureServiceIsRunning (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1978:29)
+    at transform (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1878:37)
+    at file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2865
+    at applyTransformers (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:1266)
+    at transform (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2812)
+    at load (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/esm/index.mjs?1781623486148:2:2348)
+    at async nextLoad (node:internal/modules/esm/hooks:769:22)
+    at async AsyncLoaderHooksOnLoaderHookWorker.load (node:internal/modules/esm/hooks:406:20) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'spawn'
+}
+
+Node.js v26.3.0
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+Error [TransformError]: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:440:11)
+    at Object.spawn (node:child_process:797:9)
+    at ensureServiceIsRunning (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1978:29)
+    at transform (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1878:37)
+    at file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2865
+    at applyTransformers (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:1266)
+    at transform (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2812)
+    at load (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/esm/index.mjs?1781623503448:2:2348)
+    at async nextLoad (node:internal/modules/esm/hooks:769:22)
+    at async AsyncLoaderHooksOnLoaderHookWorker.load (node:internal/modules/esm/hooks:406:20) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'spawn'
+}
+
+Node.js v26.3.0
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+Error [TransformError]: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:440:11)
+    at Object.spawn (node:child_process:797:9)
+    at ensureServiceIsRunning (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1978:29)
+    at transform (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1878:37)
+    at file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2865
+    at applyTransformers (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:1266)
+    at transform (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2812)
+    at load (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/esm/index.mjs?1781623515714:2:2348)
+    at async nextLoad (node:internal/modules/esm/hooks:769:22)
+    at async AsyncLoaderHooksOnLoaderHookWorker.load (node:internal/modules/esm/hooks:406:20) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'spawn'
+}
+
+Node.js v26.3.0
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+Error [TransformError]: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:440:11)
+    at Object.spawn (node:child_process:797:9)
+    at ensureServiceIsRunning (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1978:29)
+    at transform (C:\Repos\dais-2026-hackathon\bakehouse-genie\node_modules\esbuild\lib\main.js:1878:37)
+    at file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2865
+    at applyTransformers (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:1266)
+    at transform (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/index-7AaEi15b.mjs:14:2812)
+    at load (file:///C:/Repos/dais-2026-hackathon/bakehouse-genie/node_modules/tsx/dist/esm/index.mjs?1781623913344:2:2348)
+    at async nextLoad (node:internal/modules/esm/hooks:769:22)
+    at async AsyncLoaderHooksOnLoaderHookWorker.load (node:internal/modules/esm/hooks:406:20) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'spawn'
+}
+
+Node.js v26.3.0

@@ -1,0 +1,181 @@
+@import '@databricks/appkit-ui/styles.css';
+@import 'leaflet/dist/leaflet.css';
+
+:root,
+:root.light {
+  --radius: 0.5rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.18 0.012 248);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.18 0.012 248);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.18 0.012 248);
+  --primary: oklch(0.44 0.12 209);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.95 0.025 172);
+  --secondary-foreground: oklch(0.28 0.06 184);
+  --muted: oklch(0.96 0.008 248);
+  --muted-foreground: oklch(0.48 0.018 248);
+  --accent: oklch(0.94 0.035 82);
+  --accent-foreground: oklch(0.27 0.034 70);
+  --destructive: oklch(0.55 0.22 27);
+  --destructive-foreground: oklch(0.985 0 0);
+  --success: oklch(0.58 0.13 158);
+  --success-foreground: oklch(1 0 0);
+  --warning: oklch(0.78 0.14 82);
+  --warning-foreground: oklch(0.2 0.025 70);
+  --border: oklch(0.9 0.01 248);
+  --input: oklch(0.9 0.01 248);
+  --ring: oklch(0.58 0.1 209);
+  --chart-1: oklch(0.58 0.15 209);
+  --chart-2: oklch(0.6 0.12 158);
+  --chart-3: oklch(0.64 0.16 42);
+  --chart-4: oklch(0.52 0.12 285);
+  --chart-5: oklch(0.58 0.17 20);
+  --sidebar: oklch(0.985 0.004 248);
+  --sidebar-foreground: oklch(0.18 0.012 248);
+  --sidebar-primary: oklch(0.44 0.12 209);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.95 0.025 172);
+  --sidebar-accent-foreground: oklch(0.28 0.06 184);
+  --sidebar-border: oklch(0.9 0.01 248);
+  --sidebar-ring: oklch(0.58 0.1 209);
+}
+
+.dark {
+  --background: oklch(0.16 0.015 248);
+  --foreground: oklch(0.97 0.005 248);
+  --card: oklch(0.2 0.018 248);
+  --card-foreground: oklch(0.97 0.005 248);
+  --popover: oklch(0.2 0.018 248);
+  --popover-foreground: oklch(0.97 0.005 248);
+  --primary: oklch(0.68 0.13 205);
+  --primary-foreground: oklch(0.13 0.018 248);
+  --secondary: oklch(0.27 0.045 174);
+  --secondary-foreground: oklch(0.92 0.025 172);
+  --muted: oklch(0.24 0.018 248);
+  --muted-foreground: oklch(0.75 0.02 248);
+  --accent: oklch(0.32 0.06 82);
+  --accent-foreground: oklch(0.95 0.035 82);
+  --destructive: oklch(0.67 0.2 24);
+  --destructive-foreground: oklch(0.98 0 0);
+  --success: oklch(0.7 0.12 158);
+  --success-foreground: oklch(0.13 0.018 248);
+  --warning: oklch(0.82 0.14 82);
+  --warning-foreground: oklch(0.13 0.018 248);
+  --border: oklch(1 0 0 / 13%);
+  --input: oklch(1 0 0 / 16%);
+  --ring: oklch(0.68 0.13 205);
+  --chart-1: oklch(0.68 0.13 205);
+  --chart-2: oklch(0.7 0.12 158);
+  --chart-3: oklch(0.82 0.14 82);
+  --chart-4: oklch(0.68 0.13 285);
+  --chart-5: oklch(0.72 0.16 24);
+  --sidebar: oklch(0.18 0.016 248);
+  --sidebar-foreground: oklch(0.97 0.005 248);
+  --sidebar-primary: oklch(0.68 0.13 205);
+  --sidebar-primary-foreground: oklch(0.13 0.018 248);
+  --sidebar-accent: oklch(0.27 0.045 174);
+  --sidebar-accent-foreground: oklch(0.92 0.025 172);
+  --sidebar-border: oklch(1 0 0 / 13%);
+  --sidebar-ring: oklch(0.68 0.13 205);
+}
+
+body {
+  background: var(--background);
+}
+
+.leaflet-container {
+  background: var(--muted);
+  color: var(--foreground);
+  font-family: inherit;
+}
+
+.leaflet-control-attribution,
+.leaflet-control-zoom a,
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: var(--background);
+  color: var(--foreground);
+  border-color: var(--border);
+}
+
+.leaflet-control-zoom a {
+  border-color: var(--border);
+}
+
+.clinic-map-marker {
+  display: block;
+  position: relative;
+  width: 28px;
+  height: 28px;
+  border: 3px solid var(--background);
+  border-radius: 999px;
+  background: var(--foreground);
+  box-shadow: 0 8px 20px oklch(0 0 0 / 25%);
+}
+
+.clinic-map-marker::after {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border-radius: 999px;
+  background: var(--background);
+}
+
+.clinic-map-marker-selected {
+  background: var(--primary);
+  box-shadow:
+    0 0 0 6px color-mix(in oklch, var(--primary), transparent 70%),
+    0 10px 24px oklch(0 0 0 / 28%);
+}
+
+.patient-location-marker {
+  display: block;
+  position: relative;
+  width: 20px;
+  height: 20px;
+  border: 3px solid var(--background);
+  border-radius: 999px;
+  background: #2563eb;
+  box-shadow:
+    0 0 0 7px oklch(0.62 0.21 255 / 22%),
+    0 8px 20px oklch(0 0 0 / 24%);
+}
+
+.patient-location-marker::after {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border-radius: 999px;
+  background: #dbeafe;
+}
+
+.session-location-marker {
+  display: block;
+  position: relative;
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--background);
+  border-radius: 999px;
+  background: var(--primary);
+  box-shadow:
+    0 0 0 8px color-mix(in oklch, var(--primary), transparent 72%),
+    0 10px 24px oklch(0 0 0 / 28%);
+}
+
+.session-location-marker::after {
+  content: '';
+  position: absolute;
+  inset: 9px;
+  border-radius: 999px;
+  background: var(--primary-foreground);
+}
+
+.location-picker-map .leaflet-container {
+  cursor: crosshair;
+}
+
+.clinic-map-popup {
+  min-width: 230px;
+}

@@ -1,0 +1,12 @@
+command: ['npm', 'run', 'start']
+env:
+  - name: DATABRICKS_GENIE_SPACE_ID
+    valueFrom: genie-space
+  - name: DATABRICKS_WAREHOUSE_ID
+    valueFrom: sql-warehouse
+  - name: LAKEBASE_ENDPOINT
+    valueFrom: postgres
+  - name: LAKEBASE_FACILITIES_TABLE
+    value: public.facilities_serving
+  - name: WAREHOUSE_FACILITIES_SCHEMA
+    value: virtue_foundation_dataset.gold
