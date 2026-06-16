@@ -868,6 +868,30 @@ function cleanUsageProperties(value: unknown) {
   return value;
 }
 
+const usageIndexStatements = [
+  `
+    CREATE INDEX IF NOT EXISTS idx_usage_events_created_at
+      ON app_usage.events(created_at DESC)
+  `,
+  `
+    CREATE INDEX IF NOT EXISTS idx_usage_events_session_created_at
+      ON app_usage.events(session_id, created_at DESC)
+  `,
+  `
+    CREATE INDEX IF NOT EXISTS idx_usage_events_type_created_at
+      ON app_usage.events(event_type, created_at DESC)
+  `,
+];
+
+function getErrorMessage(error: unknown) {
+  return error instanceof Error ? error.message : String(error);
+}
+
+function isOptionalUsageIndexError(error: unknown) {
+  const message = getErrorMessage(error).toLowerCase();
+  return message.includes('must be owner of table') || message.includes('permission denied');
+}
+
 async function setupUsageAnalytics(lakebaseQuery: LakebaseQuery) {
   await lakebaseQuery(`
     CREATE SCHEMA IF NOT EXISTS app_usage;
@@ -892,14 +916,16 @@ async function setupUsageAnalytics(lakebaseQuery: LakebaseQuery) {
       url_path TEXT,
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
-
-    CREATE INDEX IF NOT EXISTS idx_usage_events_created_at
-      ON app_usage.events(created_at DESC);
-    CREATE INDEX IF NOT EXISTS idx_usage_events_session_created_at
-      ON app_usage.events(session_id, created_at DESC);
-    CREATE INDEX IF NOT EXISTS idx_usage_events_type_created_at
-      ON app_usage.events(event_type, created_at DESC);
   `);
+
+  for (const statement of usageIndexStatements) {
+    try {
+      await lakebaseQuery(statement);
+    } catch (error) {
+      if (!isOptionalUsageIndexError(error)) throw error;
+      console.warn(`Skipping optional usage analytics index setup: ${getErrorMessage(error)}`);
+    }
+  }
 }
 
 let usageAnalyticsSetupPromise: Promise<void> | null = null;

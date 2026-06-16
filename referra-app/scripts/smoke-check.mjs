@@ -44,6 +44,10 @@ const requiredText = [
     file: 'server/server.ts',
     snippets: ['createApp({', 'genie({', 'lakebase()', 'analytics()', '/api/clinic-recommendations'],
   },
+  {
+    file: 'server/server.ts',
+    snippets: ['usageIndexStatements', 'Skipping optional usage analytics index setup', 'must be owner of table'],
+  },
 ];
 
 function fail(message) {
