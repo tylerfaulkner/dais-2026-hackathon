@@ -15,6 +15,7 @@ import {
   type GenieMessageItem,
 } from '@databricks/appkit-ui/react';
 import {
+  AlertCircle,
   Check,
   ChevronDown,
   Code2,
@@ -739,7 +740,7 @@ export function GeniePage({
   theme: 'light' | 'dark';
   logAction?: (event: UsageLogEvent) => void;
 }) {
-  const { messages, status, sendMessage, hasPreviousPage, fetchPreviousPage } = useGenieChat({
+  const { messages, status, error: genieError, sendMessage, hasPreviousPage, fetchPreviousPage } = useGenieChat({
     alias: 'default',
     persistInUrl: false,
   });
@@ -754,10 +755,24 @@ export function GeniePage({
   const [sqlCopied, setSqlCopied] = useState(false);
   const isChatBusy = status === 'loading-history' || status === 'streaming';
   const visibleRerunResults = useMemo(() => (latestGeneratedSql ? rerunResults : []), [latestGeneratedSql, rerunResults]);
+  const chatErrorMessage = status === 'error' && genieError ? genieError : '';
 
   useEffect(() => {
     clearConversationIdFromUrl();
   }, []);
+
+  useEffect(() => {
+    if (!chatErrorMessage) return;
+
+    logAction?.({
+      eventType: 'genie_chat_failed',
+      page: 'genie',
+      targetType: 'chat_response',
+      properties: {
+        message: chatErrorMessage,
+      },
+    });
+  }, [chatErrorMessage, logAction]);
 
   useEffect(() => {
     if (!latestGeneratedSql) {
@@ -925,6 +940,19 @@ export function GeniePage({
               hasPreviousPage={hasPreviousPage}
               onFetchPreviousPage={fetchPreviousPage}
             />
+            {chatErrorMessage ? (
+              <div className="shrink-0 border-t bg-destructive/10 px-3 py-3 text-sm text-destructive" role="alert">
+                <div className="flex gap-2">
+                  <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+                  <div className="min-w-0">
+                    <div className="font-medium">Genie did not respond.</div>
+                    <div className="mt-1 text-destructive/90">
+                      {chatErrorMessage} Try sending the question again or narrowing the request.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : null}
             <GenieChatInput
               className="shrink-0 border-t p-3"
               disabled={isChatBusy}

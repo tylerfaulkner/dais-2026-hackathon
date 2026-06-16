@@ -33,6 +33,10 @@ const requiredText = [
     snippets: ['Referra', 'Ask Referra', 'Find care', 'NFHS Data', 'Usage'],
   },
   {
+    file: 'client/src/pages/genie/GeniePage.tsx',
+    snippets: ['Genie did not respond.', 'genie_chat_failed'],
+  },
+  {
     file: 'server/server.ts',
     snippets: ['createApp({', 'genie({', 'lakebase()', 'analytics()', '/api/clinic-recommendations'],
   },
