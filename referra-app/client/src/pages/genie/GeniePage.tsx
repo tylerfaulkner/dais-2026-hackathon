@@ -45,6 +45,8 @@ interface PresentedGenieResult {
   name: string;
   type: string | null;
   operatorType: string | null;
+  confidenceScore: number | null;
+  distanceKm: number | null;
   description: string | null;
   address: string;
   city: string | null;
@@ -71,6 +73,8 @@ interface GeneratedSqlResultsResponse {
   clinics?: PresentedGenieResult[];
   message?: string;
 }
+
+type RerunStatus = 'idle' | 'loading' | 'ready' | 'preparing' | 'error';
 
 interface SessionLocation {
   latitude: number;
@@ -330,6 +334,17 @@ function getResultAddressLine(result: PresentedGenieResult) {
   return result.address || [result.city, result.state, result.postalCode].filter(Boolean).join(', ') || null;
 }
 
+function formatModelScore(value: number | null) {
+  if (value === null || !Number.isFinite(value)) return 'Score n/a';
+  return `Score ${value.toFixed(value < 10 ? 2 : 1)}`;
+}
+
+function formatDistanceKm(value: number | null) {
+  if (value === null || !Number.isFinite(value)) return 'Distance n/a';
+  if (value < 1) return `${Math.round(value * 1000)} m`;
+  return `${value.toFixed(value < 10 ? 1 : 0)} km`;
+}
+
 function firstUrl(value: unknown) {
   if (!value) return '';
 
@@ -438,7 +453,12 @@ function ResultDetailsDialog({
           <p className="text-sm text-muted-foreground">{getResultSummary(result)}</p>
 
           <div className="grid gap-3 sm:grid-cols-3">
+            <ResultMetric label="Model score" value={formatModelScore(result.confidenceScore)} />
+            <ResultMetric label="Distance" value={formatDistanceKm(result.distanceKm)} />
             <ResultMetric label="Organization type" value={organizationType ?? 'Unknown'} />
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2">
             <ResultMetric label="Doctors" value={result.numberDoctors ?? 'Unknown'} />
             <ResultMetric label="Capacity" value={result.capacity ?? 'Unknown'} />
           </div>
@@ -485,6 +505,8 @@ function ResultDetailsDialog({
             <div className="mb-2 font-medium">Clinic fields</div>
             <div className="grid gap-2 text-sm sm:grid-cols-2">
               <ResultField label="Name" value={result.name} />
+              <ResultField label="Model score" value={formatModelScore(result.confidenceScore)} />
+              <ResultField label="Distance" value={formatDistanceKm(result.distanceKm)} />
               <ResultField label="Organization type" value={organizationType} />
               <ResultField label="Official phone" value={result.phone} />
               <ResultField label="Email" value={result.email} />
@@ -747,6 +769,8 @@ export function GeniePage({
   const displayedMessages = useMemo(() => getChatMessagesForDisplay(messages, audienceMode), [messages, audienceMode]);
   const latestGeneratedSql = useMemo(() => getLatestGeneratedSql(messages), [messages]);
   const [rerunResults, setRerunResults] = useState<PresentedGenieResult[]>([]);
+  const [rerunStatus, setRerunStatus] = useState<RerunStatus>('idle');
+  const [rerunMessage, setRerunMessage] = useState('');
   const [selectedResult, setSelectedResult] = useState<PresentedGenieResult | null>(null);
   const [selectedReferralIds, setSelectedReferralIds] = useState<Set<string>>(() => new Set());
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -756,6 +780,7 @@ export function GeniePage({
   const isChatBusy = status === 'loading-history' || status === 'streaming';
   const visibleRerunResults = useMemo(() => (latestGeneratedSql ? rerunResults : []), [latestGeneratedSql, rerunResults]);
   const chatErrorMessage = status === 'error' && genieError ? genieError : '';
+  const showRerunStatus = rerunStatus === 'loading' || rerunStatus === 'preparing' || rerunStatus === 'error';
 
   useEffect(() => {
     clearConversationIdFromUrl();
@@ -780,33 +805,48 @@ export function GeniePage({
     }
 
     const controller = new AbortController();
+    async function loadRerunResults() {
+      setRerunStatus('loading');
+      setRerunMessage('');
 
-    fetch('/api/clinic-recommendations', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ generatedSql: latestGeneratedSql }),
-      signal: controller.signal,
-    })
-      .then(async (response) => {
-        const payload = (await response.json()) as GeneratedSqlResultsResponse;
-        if (!response.ok || payload.status === 'error') {
-          throw new Error(payload.message ?? 'Unable to rerun Genie SQL.');
-        }
-        const results = payload.results ?? payload.clinics ?? [];
-        setRerunResults(results);
-        logAction?.({
-          eventType: 'genie_results_loaded',
-          page: 'genie',
-          targetType: 'genie_results',
-          properties: {
-            resultCount: results.length,
-            hasSql: Boolean(latestGeneratedSql),
-          },
-        });
-      })
+      const response = await fetch('/api/clinic-recommendations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ generatedSql: latestGeneratedSql }),
+        signal: controller.signal,
+      });
+
+      const payload = (await response.json()) as GeneratedSqlResultsResponse;
+      if (!response.ok || payload.status === 'error') {
+        throw new Error(payload.message ?? 'Unable to rerun Genie SQL.');
+      }
+      if (payload.status === 'preparing') {
+        setRerunResults([]);
+        setRerunStatus('preparing');
+        setRerunMessage(payload.message ?? 'The model query is still running. Try the question again in a moment.');
+        return;
+      }
+      const results = payload.results ?? payload.clinics ?? [];
+      setRerunResults(results);
+      setRerunStatus('ready');
+      setRerunMessage('');
+      logAction?.({
+        eventType: 'genie_results_loaded',
+        page: 'genie',
+        targetType: 'genie_results',
+        properties: {
+          resultCount: results.length,
+          hasSql: Boolean(latestGeneratedSql),
+        },
+      });
+    }
+
+    void loadRerunResults()
       .catch(() => {
         if (controller.signal.aborted) return;
         setRerunResults([]);
+        setRerunStatus('error');
+        setRerunMessage('Unable to rerun the Genie SQL for the side panel. The chat answer may still contain the recommendation details.');
         logAction?.({
           eventType: 'genie_results_load_failed',
           page: 'genie',
@@ -970,6 +1010,38 @@ export function GeniePage({
                 {visibleRerunResults.length}
               </Badge>
             </div>
+            {showRerunStatus ? (
+              <div
+                className={cn(
+                  'rounded-md border px-3 py-2 text-sm',
+                  rerunStatus === 'error' ? 'bg-destructive/10 text-destructive' : 'bg-muted/30 text-muted-foreground'
+                )}
+                role={rerunStatus === 'error' ? 'alert' : 'status'}
+              >
+                <div className="flex gap-2">
+                  {rerunStatus === 'error' ? (
+                    <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+                  ) : (
+                    <Sparkles className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+                  )}
+                  <div className="min-w-0">
+                    <div className="font-medium text-foreground">
+                      {rerunStatus === 'loading'
+                        ? 'Hydrating recommendations'
+                        : rerunStatus === 'preparing'
+                          ? 'Model query is still running'
+                          : 'Side panel could not load'}
+                    </div>
+                    <div className="mt-1">
+                      {rerunMessage ||
+                        (rerunStatus === 'loading'
+                          ? 'Referra is rerunning the Genie SQL and fetching display fields.'
+                          : 'The chat answer may still contain the recommendation details.')}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : null}
             {visibleRerunResults.length > 0 ? (
               <div className="rounded-md border bg-muted/20 p-2">
                 <div className="mb-2 flex items-center justify-between gap-2 text-xs text-muted-foreground">
@@ -1049,6 +1121,8 @@ export function GeniePage({
                               <div className="min-w-0">
                                 <div className="truncate font-medium">{result.name}</div>
                                 <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                                  <span>{formatModelScore(result.confidenceScore)}</span>
+                                  <span>{formatDistanceKm(result.distanceKm)}</span>
                                   <span className="inline-flex items-center gap-1">
                                     <MapPin className="h-3.5 w-3.5" aria-hidden="true" />
                                     <span className="truncate">{addressLine ?? 'Address not listed'}</span>

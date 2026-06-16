@@ -9,6 +9,8 @@ interface PresentedGenieResult {
   name: string;
   type: string | null;
   operatorType: string | null;
+  confidenceScore: number | null;
+  distanceKm: number | null;
   description: string | null;
   address: string;
   city: string | null;
@@ -1056,6 +1058,49 @@ function getResultNumber(row: Record<string, unknown>, candidates: string[]) {
   return Number.isFinite(parsed) ? parsed : null;
 }
 
+function delay(ms: number) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
+async function waitForStatementResult(workspace: WorkspaceClient, initialStatementId: string) {
+  let statement = await workspace.statementExecution.getStatement({ statement_id: initialStatementId });
+  const startedAt = Date.now();
+  const maxPollDurationMs = 110_000;
+
+  while (statement.status?.state === 'PENDING' || statement.status?.state === 'RUNNING') {
+    if (Date.now() - startedAt >= maxPollDurationMs) return statement;
+    await delay(2_500);
+    statement = await workspace.statementExecution.getStatement({ statement_id: initialStatementId });
+  }
+
+  return statement;
+}
+
+async function executeGeneratedSqlStatement(workspace: WorkspaceClient, warehouseId: string, statement: string) {
+  const initialResult = await workspace.statementExecution.executeStatement({
+    warehouse_id: warehouseId,
+    statement,
+    wait_timeout: '50s',
+    on_wait_timeout: 'CONTINUE',
+    row_limit: 50,
+    disposition: 'INLINE',
+    format: 'JSON_ARRAY',
+  });
+
+  if (initialResult.status?.state === 'SUCCEEDED') return initialResult;
+
+  if (
+    (initialResult.status?.state === 'PENDING' || initialResult.status?.state === 'RUNNING') &&
+    initialResult.statement_id
+  ) {
+    return waitForStatementResult(workspace, initialResult.statement_id);
+  }
+
+  return initialResult;
+}
+
 function createRawFields(row: Record<string, unknown>) {
   return Object.entries(row)
     .map(([key, value]) => ({
@@ -1094,6 +1139,8 @@ function serializeGeneratedSqlRow(row: Record<string, unknown>, index: number): 
       'operatorTypeId',
       'operator',
     ]),
+    confidenceScore: getResultNumber(row, ['confidence_score', 'score', 'relevance_score', 'model_score']),
+    distanceKm: getResultNumber(row, ['distance_km', 'distanceKm', 'distance', 'model_distance_km']),
     description: getResultText(row, ['description', 'summary', 'blurb', 'capability', 'capabilities']),
     address,
     city,
@@ -1367,20 +1414,20 @@ createApp({
 
           const statement = validateGeneratedSelectSql(generatedSql);
           const workspace = new WorkspaceClient({});
-          const result = await workspace.statementExecution.executeStatement({
-            warehouse_id: warehouseId,
-            statement,
-            wait_timeout: '30s',
-            on_wait_timeout: 'CANCEL',
-            row_limit: 50,
-            disposition: 'INLINE',
-            format: 'JSON_ARRAY',
-          });
+          const result = await executeGeneratedSqlStatement(workspace, warehouseId, statement);
 
-          if (result.status?.state !== 'SUCCEEDED') {
+          if (result.status?.state === 'PENDING' || result.status?.state === 'RUNNING') {
             res.status(202).json({
               status: 'preparing',
-              message: result.status?.error?.message ?? 'Clinic recommendations are still being prepared.',
+              message: 'The recommendation model query is still running. Try again in a moment.',
+            });
+            return;
+          }
+
+          if (result.status?.state !== 'SUCCEEDED') {
+            res.status(400).json({
+              status: 'error',
+              message: result.status?.error?.message ?? 'Unable to build clinic recommendations from the generated SQL.',
             });
             return;
           }

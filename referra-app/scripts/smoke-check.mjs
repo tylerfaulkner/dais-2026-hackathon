@@ -34,7 +34,11 @@ const requiredText = [
   },
   {
     file: 'client/src/pages/genie/GeniePage.tsx',
-    snippets: ['Genie did not respond.', 'genie_chat_failed'],
+    snippets: ['Genie did not respond.', 'genie_chat_failed', 'Hydrating recommendations', 'Model score'],
+  },
+  {
+    file: 'server/server.ts',
+    snippets: ['on_wait_timeout', 'CONTINUE', 'waitForStatementResult', 'confidenceScore', 'distanceKm'],
   },
   {
     file: 'server/server.ts',
