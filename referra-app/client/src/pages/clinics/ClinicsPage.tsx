@@ -46,6 +46,12 @@ interface FacilityRow {
   last_updated: string | null;
   latitude: number | null;
   longitude: number | null;
+  distance_km: number | null;
+}
+
+interface ClinicPatientLocation {
+  latitude: number;
+  longitude: number;
 }
 
 interface FilterOptionRow {
@@ -69,6 +75,7 @@ const numberFormatter = new Intl.NumberFormat('en-IN');
 const gridColumns = [
   { id: 'facility', label: 'Facility' },
   { id: 'location', label: 'Location' },
+  { id: 'distance', label: 'Distance' },
   { id: 'type', label: 'Type' },
   { id: 'clinicalSignals', label: 'Clinical signals' },
   { id: 'contact', label: 'Contact' },
@@ -195,6 +202,8 @@ function useFacilityGridData(filters: {
   facilityType: string;
   specialty: string;
   procedure: string;
+  patientLatitude: number | null;
+  patientLongitude: number | null;
 }) {
   const [data, setData] = useState<FacilityGridResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -210,6 +219,11 @@ function useFacilityGridData(filters: {
       procedure: filters.procedure,
       limit: '250',
     });
+
+    if (filters.patientLatitude !== null && filters.patientLongitude !== null) {
+      params.set('patient_latitude', String(filters.patientLatitude));
+      params.set('patient_longitude', String(filters.patientLongitude));
+    }
 
     async function loadFacilities() {
       setLoading(true);
@@ -243,7 +257,15 @@ function useFacilityGridData(filters: {
     return () => {
       controller.abort();
     };
-  }, [filters.facilityType, filters.procedure, filters.search, filters.specialty, filters.state]);
+  }, [
+    filters.facilityType,
+    filters.patientLatitude,
+    filters.patientLongitude,
+    filters.procedure,
+    filters.search,
+    filters.specialty,
+    filters.state,
+  ]);
 
   return { data, loading, error };
 }
@@ -282,6 +304,13 @@ function coordinatesLabel(facility: FacilityRow) {
   const longitude = Number(facility.longitude);
   if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return 'Missing';
   return `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
+}
+
+function distanceLabel(facility: FacilityRow) {
+  const distanceKm = Number(facility.distance_km);
+  if (!Number.isFinite(distanceKm)) return 'Not available';
+  if (distanceKm < 1) return `${Math.round(distanceKm * 1000)} m`;
+  return `${distanceKm.toFixed(distanceKm < 10 ? 1 : 0)} km`;
 }
 
 function FacilityBadges({ facility }: { facility: FacilityRow }) {
@@ -606,6 +635,10 @@ function FacilityDetails({ facility, logAction }: { facility: FacilityRow | null
             <div className="mt-1 font-medium">{displayText(facility.capacity)}</div>
           </div>
           <div>
+            <div className="text-muted-foreground">Distance</div>
+            <div className="mt-1 font-medium">{distanceLabel(facility)}</div>
+          </div>
+          <div>
             <div className="text-muted-foreground">Last updated</div>
             <div className="mt-1 font-medium">{displayText(facility.last_updated)}</div>
           </div>
@@ -619,7 +652,12 @@ function FacilityDetails({ facility, logAction }: { facility: FacilityRow | null
   );
 }
 
-export function ClinicsPage({ logAction }: { logAction?: (event: UsageLogEvent) => void }) {
+interface ClinicsPageProps {
+  selectedLocation: ClinicPatientLocation | null;
+  logAction?: (event: UsageLogEvent) => void;
+}
+
+export function ClinicsPage({ selectedLocation, logAction }: ClinicsPageProps) {
   const [stateFilter, setStateFilter] = useState('all');
   const [facilityTypeFilter, setFacilityTypeFilter] = useState('all');
   const [specialtyFilter, setSpecialtyFilter] = useState('all');
@@ -638,8 +676,10 @@ export function ClinicsPage({ logAction }: { logAction?: (event: UsageLogEvent) 
       facilityType: facilityTypeFilter,
       specialty: specialtyFilter,
       procedure: procedureFilter,
+      patientLatitude: selectedLocation?.latitude ?? null,
+      patientLongitude: selectedLocation?.longitude ?? null,
     }),
-    [facilityTypeFilter, procedureFilter, specialtyFilter, stateFilter]
+    [facilityTypeFilter, procedureFilter, selectedLocation?.latitude, selectedLocation?.longitude, specialtyFilter, stateFilter]
   );
 
   const { data: facilityGridData, loading: facilitiesLoading, error: facilitiesError } = useFacilityGridData(queryParameters);
@@ -678,11 +718,6 @@ export function ClinicsPage({ logAction }: { logAction?: (event: UsageLogEvent) 
   };
 
   useEffect(() => {
-    const facilityIds = new Set(facilities.map((facility) => facility.id));
-    setSelectedReferralFacilityIds((currentIds) => new Set([...currentIds].filter((id) => facilityIds.has(id))));
-  }, [facilities]);
-
-  useEffect(() => {
     logAction?.({
       eventType: 'clinic_filters_changed',
       page: 'clinics',
@@ -703,9 +738,10 @@ export function ClinicsPage({ logAction }: { logAction?: (event: UsageLogEvent) 
         matchingFacilities,
         mappedFacilities,
         dataSource: facilityGridData.dataSource,
+        orderedByDistance: queryParameters.patientLatitude !== null && queryParameters.patientLongitude !== null,
       },
     });
-  }, [facilities.length, facilityGridData, logAction, mappedFacilities, matchingFacilities]);
+  }, [facilities.length, facilityGridData, logAction, mappedFacilities, matchingFacilities, queryParameters]);
 
   const toggleReferralSelection = (id: string, checked: boolean) => {
     setSelectedReferralFacilityIds((currentIds) => {
@@ -839,7 +875,7 @@ export function ClinicsPage({ logAction }: { logAction?: (event: UsageLogEvent) 
             <label className="inline-flex items-center gap-2 text-muted-foreground">
               <input
                 aria-label="Select all visible facilities for referral"
-                checked={facilities.length > 0 && selectedReferralFacilityIds.size === facilities.length}
+                checked={facilities.length > 0 && selectedReferrals.length === facilities.length}
                 className="h-4 w-4 rounded border-border"
                 disabled={facilities.length === 0}
                 onChange={(event) => setAllReferralSelections(event.target.checked)}
@@ -901,12 +937,13 @@ export function ClinicsPage({ logAction }: { logAction?: (event: UsageLogEvent) 
 
         {!facilitiesLoading && !facilitiesError ? (
           <div className="min-h-0 flex-1 overflow-auto">
-            <table className={cn('w-full text-left text-sm', visibleGridColumns.size >= 5 ? 'min-w-[1120px]' : 'min-w-[760px]')}>
+            <table className={cn('w-full text-left text-sm', visibleGridColumns.size >= 6 ? 'min-w-[1240px]' : 'min-w-[820px]')}>
               <thead className="sticky top-0 z-10 border-b bg-muted/80 text-xs uppercase text-muted-foreground backdrop-blur">
                 <tr>
                   <th className="w-10 px-4 py-3 font-medium">Select</th>
                   {isGridColumnVisible('facility') ? <th className="px-4 py-3 font-medium">Facility</th> : null}
                   {isGridColumnVisible('location') ? <th className="px-4 py-3 font-medium">Location</th> : null}
+                  {isGridColumnVisible('distance') ? <th className="px-4 py-3 font-medium">Distance</th> : null}
                   {isGridColumnVisible('type') ? <th className="px-4 py-3 font-medium">Type</th> : null}
                   {isGridColumnVisible('clinicalSignals') ? <th className="px-4 py-3 font-medium">Clinical signals</th> : null}
                   {isGridColumnVisible('contact') ? <th className="px-4 py-3 font-medium">Contact</th> : null}
@@ -980,6 +1017,11 @@ export function ClinicsPage({ logAction }: { logAction?: (event: UsageLogEvent) 
                         <td className="px-4 py-3 align-top">
                           <div>{[displayText(facility.city, ''), displayText(facility.state, '')].filter(Boolean).join(', ') || 'Unknown'}</div>
                           <div className="mt-1 max-w-[220px] truncate text-xs text-muted-foreground">{displayText(facility.address)}</div>
+                        </td>
+                      ) : null}
+                      {isGridColumnVisible('distance') ? (
+                        <td className="px-4 py-3 align-top tabular-nums">
+                          {distanceLabel(facility)}
                         </td>
                       ) : null}
                       {isGridColumnVisible('type') ? (

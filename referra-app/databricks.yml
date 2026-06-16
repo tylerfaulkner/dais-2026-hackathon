@@ -1,5 +1,5 @@
 bundle:
-  name: bakehouse-genie
+  name: referra-app
 
 variables:
   genie_space_id:
@@ -16,7 +16,7 @@ variables:
 resources:
   apps:
     app:
-      name: 'bakehouse-genie'
+      name: 'referra-app'
       description: 'Conversational analytics app powered by Databricks AI/BI Genie'
       source_code_path: ./
       user_api_scopes:
@@ -37,6 +37,7 @@ resources:
           postgres:
             branch: ${var.lakebase_branch}
             database: ${var.lakebase_database}
+            permission: CAN_CONNECT_AND_CREATE
 
 targets:
   default:
@@ -45,7 +46,7 @@ targets:
       host: https://dbc-4745c1e0-06b0.cloud.databricks.com
 
     variables:
-      genie_space_id: 01f16915f85b1e8ea6ed1ed3527b635a
+      genie_space_id: 01f16999d12a176991615aabc8dc1d8c
       genie_space_name: India Health and Facility Data
       warehouse_id: ff45ecc135192f6f
       lakebase_branch: projects/referra-districts/branches/production

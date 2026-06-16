@@ -76,6 +76,8 @@ interface SessionLocation {
   longitude: number;
   insuranceStatus: 'insured' | 'uninsured' | 'unsure';
   incomeLevel: 'low' | 'middle' | 'high' | 'prefer-not-to-say';
+  gender: 'female' | 'male' | 'nonbinary' | 'prefer-not-to-say';
+  age: number;
   selectedAt: string;
 }
 
@@ -108,6 +110,13 @@ const incomeLabels: Record<SessionLocation['incomeLevel'], string> = {
   'prefer-not-to-say': 'Income not provided',
 };
 
+const genderLabels: Record<SessionLocation['gender'], string> = {
+  female: 'Female',
+  male: 'Male',
+  nonbinary: 'Nonbinary',
+  'prefer-not-to-say': 'Gender not provided',
+};
+
 function getInitialIntroMessage() {
   if (typeof window === 'undefined') return introMessages[0];
 
@@ -127,8 +136,13 @@ function formatLocation(location: Pick<SessionLocation, 'latitude' | 'longitude'
   return `${formatCoordinate(location.latitude, 'N', 'S')}, ${formatCoordinate(location.longitude, 'E', 'W')}`;
 }
 
-function formatPatientAttributes(location: Pick<SessionLocation, 'insuranceStatus' | 'incomeLevel'>) {
-  return `${insuranceLabels[location.insuranceStatus]} - ${incomeLabels[location.incomeLevel]}`;
+function formatPatientAttributes(location: Pick<SessionLocation, 'insuranceStatus' | 'incomeLevel' | 'gender' | 'age'>) {
+  return [
+    insuranceLabels[location.insuranceStatus],
+    incomeLabels[location.incomeLevel],
+    genderLabels[location.gender],
+    `${location.age} years old`,
+  ].join(' - ');
 }
 
 function getLocationContext(location: SessionLocation | null) {
@@ -141,8 +155,10 @@ function getLocationContext(location: SessionLocation | null) {
     `The user selected this session location: latitude ${location.latitude.toFixed(6)}, longitude ${location.longitude.toFixed(6)}.`,
     `Patient insurance status: ${insuranceLabels[location.insuranceStatus]}.`,
     `Patient income level: ${incomeLabels[location.incomeLevel]}.`,
+    `Patient gender: ${genderLabels[location.gender]}.`,
+    `Patient age: ${location.age}.`,
     'Use these coordinates automatically when interpreting distance, nearby, closest, referral catchment, or location-sensitive care questions.',
-    'Use the insurance and income details to tailor affordability, access, and referral guidance where relevant.',
+    'Use the insurance, income, gender, and age details to tailor affordability, access, clinical fit, and referral guidance where relevant.',
     'Do not ask the user for their location unless they explicitly want to change it or the selected coordinates are insufficient.',
   ].join('\n');
 }
@@ -316,7 +332,14 @@ function getResultAddressLine(result: PresentedGenieResult) {
 function firstUrl(value: unknown) {
   if (!value) return '';
 
-  const first = String(value)
+  const text =
+    typeof value === 'string'
+      ? value
+      : typeof value === 'number' || typeof value === 'boolean' || typeof value === 'bigint'
+        ? String(value)
+        : '';
+
+  const first = text
     .split(',')
     .map((item) => item.trim())
     .find((item) => /^https?:\/\//i.test(item));
@@ -730,19 +753,14 @@ export function GeniePage({
   const [sqlDebugOpen, setSqlDebugOpen] = useState(false);
   const [sqlCopied, setSqlCopied] = useState(false);
   const isChatBusy = status === 'loading-history' || status === 'streaming';
+  const visibleRerunResults = useMemo(() => (latestGeneratedSql ? rerunResults : []), [latestGeneratedSql, rerunResults]);
 
   useEffect(() => {
     clearConversationIdFromUrl();
   }, []);
 
   useEffect(() => {
-    setSqlCopied(false);
-  }, [latestGeneratedSql]);
-
-  useEffect(() => {
     if (!latestGeneratedSql) {
-      setRerunResults([]);
-      setSelectedReferralIds(new Set());
       return;
     }
 
@@ -785,14 +803,9 @@ export function GeniePage({
     return () => controller.abort();
   }, [latestGeneratedSql, logAction]);
 
-  useEffect(() => {
-    const resultIds = new Set(rerunResults.map((result) => result.id));
-    setSelectedReferralIds((currentIds) => new Set([...currentIds].filter((id) => resultIds.has(id))));
-  }, [rerunResults]);
-
   const selectedReferralResults = useMemo(
-    () => rerunResults.filter((result) => selectedReferralIds.has(result.id)),
-    [rerunResults, selectedReferralIds]
+    () => visibleRerunResults.filter((result) => selectedReferralIds.has(result.id)),
+    [visibleRerunResults, selectedReferralIds]
   );
   const selectedReferrals = useMemo(
     () => selectedReferralResults.map(toReferralLocation),
@@ -807,6 +820,10 @@ export function GeniePage({
       properties: {
         promptLength: content.length,
         hasPatientLocation: Boolean(selectedLocation),
+        patientInsuranceStatus: selectedLocation?.insuranceStatus ?? null,
+        patientIncomeLevel: selectedLocation?.incomeLevel ?? null,
+        patientGender: selectedLocation?.gender ?? null,
+        patientAge: selectedLocation?.age ?? null,
       },
     });
     sendMessage(addLocationContext(content, selectedLocation));
@@ -846,13 +863,13 @@ export function GeniePage({
   };
 
   const setAllReferralSelections = (checked: boolean) => {
-    setSelectedReferralIds(checked ? new Set(rerunResults.map((result) => result.id)) : new Set());
+    setSelectedReferralIds(checked ? new Set(visibleRerunResults.map((result) => result.id)) : new Set());
     logAction?.({
       eventType: checked ? 'referrals_select_all' : 'referrals_clear',
       page: 'genie',
       targetType: 'referral_selection',
       properties: {
-        resultCount: rerunResults.length,
+        resultCount: visibleRerunResults.length,
       },
     });
   };
@@ -873,7 +890,7 @@ export function GeniePage({
   };
 
   return (
-    <div className="grid h-[calc(100vh-172px)] min-h-0 gap-3 overflow-hidden xl:grid-cols-[minmax(0,1fr)_390px]">
+    <div className="grid h-[calc(100vh-172px)] min-h-0 gap-3 overflow-hidden xl:grid-cols-[minmax(0,1fr)_480px] 2xl:grid-cols-[minmax(0,1fr)_520px]">
         <section className="flex min-h-0 flex-col overflow-hidden rounded-lg border bg-background">
           <div className="shrink-0 border-b px-3 py-3 md:px-4">
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
@@ -922,16 +939,16 @@ export function GeniePage({
             <div className="flex items-center justify-between gap-3">
               <h3 className="text-base font-semibold">Genie Results</h3>
               <Badge variant="outline" className="shrink-0">
-                {rerunResults.length}
+                {visibleRerunResults.length}
               </Badge>
             </div>
-            {rerunResults.length > 0 ? (
+            {visibleRerunResults.length > 0 ? (
               <div className="rounded-md border bg-muted/20 p-2">
                 <div className="mb-2 flex items-center justify-between gap-2 text-xs text-muted-foreground">
                   <label className="inline-flex min-w-0 items-center gap-2">
                     <input
                       aria-label="Select all Genie results for referral"
-                      checked={selectedReferralIds.size === rerunResults.length && rerunResults.length > 0}
+                      checked={selectedReferrals.length === visibleRerunResults.length && visibleRerunResults.length > 0}
                       className="h-4 w-4 rounded border-border"
                       onChange={(event) => setAllReferralSelections(event.target.checked)}
                       type="checkbox"
@@ -940,7 +957,7 @@ export function GeniePage({
                   </label>
                   <button
                     className="font-medium text-foreground underline-offset-4 hover:underline disabled:pointer-events-none disabled:opacity-50"
-                    disabled={selectedReferralIds.size === 0}
+                    disabled={selectedReferrals.length === 0}
                     onClick={() => setAllReferralSelections(false)}
                     type="button"
                   >
@@ -972,11 +989,11 @@ export function GeniePage({
             ) : null}
           </div>
 
-          {rerunResults.length > 0 ? (
+          {visibleRerunResults.length > 0 ? (
             <>
               <ScrollArea className="min-h-0 flex-1 rounded-md border">
                 <div className="space-y-2 p-2">
-                  {rerunResults.map((result, index) => {
+                  {visibleRerunResults.map((result) => {
                     const isSelected = selectedResult?.id === result.id;
                     const organizationType = getOrganizationType(result);
                     const addressLine = getResultAddressLine(result);
@@ -989,7 +1006,7 @@ export function GeniePage({
                           'w-full rounded-md border bg-background p-3 transition-colors hover:bg-muted/60',
                           isSelected ? 'border-primary bg-primary/5' : 'border-border'
                         )}
-                        key={`${result.id}-${index}`}
+                        key={result.id}
                       >
                         <div className="flex items-start gap-3">
                           <input
@@ -1065,7 +1082,7 @@ export function GeniePage({
               </ScrollArea>
 
               <ResultsMap
-                results={rerunResults}
+                results={visibleRerunResults}
                 selectedResultId={selectedResult?.id ?? ''}
                 selectedLocation={selectedLocation}
                 onSelectResult={(result) => openResult(result, 'map')}

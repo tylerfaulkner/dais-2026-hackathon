@@ -59,6 +59,7 @@ interface FacilityGridRow {
   last_updated: string | null;
   latitude: number | string | null;
   longitude: number | string | null;
+  distance_km: number | string | null;
   [key: string]: unknown;
 }
 
@@ -83,6 +84,8 @@ interface FacilityGridFilters {
   specialty: string;
   procedure: string;
   limit: number;
+  patientLatitude: number | null;
+  patientLongitude: number | null;
 }
 
 interface UsageEventRow {
@@ -237,6 +240,12 @@ function toSafeLimitParam(value: unknown) {
   return Math.min(Math.max(Math.trunc(parsed), 1), 500);
 }
 
+function toSafeCoordinateParam(value: unknown, min: number, max: number) {
+  const parsed = Number(normalizeParam(value, ''));
+  if (!Number.isFinite(parsed) || parsed < min || parsed > max) return null;
+  return parsed;
+}
+
 function pickColumn(columnsByLowerName: Map<string, string>, candidates: string[]) {
   const match = candidates.find((candidate) => columnsByLowerName.has(candidate.toLowerCase()));
   const columnName = match ? columnsByLowerName.get(match.toLowerCase()) : undefined;
@@ -288,6 +297,54 @@ function sqlStringLiteral(value: string) {
 
 function warehouseCleanText(expression: string) {
   return `NULLIF(NULLIF(TRIM(CAST(${expression} AS STRING)), ''), 'null')`;
+}
+
+function sqlNumberLiteral(value: number | null) {
+  return value === null ? 'NULL' : String(value);
+}
+
+function warehouseDistanceExpression(filters: FacilityGridFilters) {
+  const patientLatitude = sqlNumberLiteral(filters.patientLatitude);
+  const patientLongitude = sqlNumberLiteral(filters.patientLongitude);
+  const facilityLatitude = 'TRY_CAST(latitude AS DOUBLE)';
+  const facilityLongitude = 'TRY_CAST(longitude AS DOUBLE)';
+
+  return `
+    CASE
+      WHEN ${patientLatitude} IS NULL OR ${patientLongitude} IS NULL OR ${facilityLatitude} IS NULL OR ${facilityLongitude} IS NULL THEN NULL
+      ELSE 6371.0 * 2.0 * ASIN(LEAST(1.0, SQRT(
+        POWER(SIN(RADIANS(${facilityLatitude} - ${patientLatitude}) / 2.0), 2.0)
+        + COS(RADIANS(${patientLatitude})) * COS(RADIANS(${facilityLatitude}))
+        * POWER(SIN(RADIANS(${facilityLongitude} - ${patientLongitude}) / 2.0), 2.0)
+      )))
+    END
+  `;
+}
+
+function pgCoordinateExpression(column: string) {
+  return `
+    CASE
+      WHEN ${column} IS NULL THEN NULL
+      WHEN CAST(${column} AS TEXT) ~ '^-?[0-9]+(\\.[0-9]+)?$' THEN CAST(${column} AS DOUBLE PRECISION)
+      ELSE NULL
+    END
+  `;
+}
+
+function lakebaseDistanceExpression() {
+  const facilityLatitude = pgCoordinateExpression('latitude');
+  const facilityLongitude = pgCoordinateExpression('longitude');
+
+  return `
+    CASE
+      WHEN $6::DOUBLE PRECISION IS NULL OR $7::DOUBLE PRECISION IS NULL OR ${facilityLatitude} IS NULL OR ${facilityLongitude} IS NULL THEN NULL
+      ELSE 6371.0 * 2.0 * ASIN(LEAST(1.0, SQRT(
+        POWER(SIN(RADIANS(${facilityLatitude} - $6::DOUBLE PRECISION) / 2.0), 2.0)
+        + COS(RADIANS($6::DOUBLE PRECISION)) * COS(RADIANS(${facilityLatitude}))
+        * POWER(SIN(RADIANS(${facilityLongitude} - $7::DOUBLE PRECISION) / 2.0), 2.0)
+      )))
+    END
+  `;
 }
 
 function buildWarehouseFacilitiesBaseSql(tables: WarehouseFacilityTables, filters: FacilityGridFilters) {
@@ -418,9 +475,12 @@ function buildWarehouseFacilitiesGridSql(tables: WarehouseFacilityTables, filter
       source_urls,
       last_updated,
       latitude,
-      longitude
+      longitude,
+      ${warehouseDistanceExpression(filters)} AS distance_km
     FROM filtered
     ORDER BY
+      CASE WHEN distance_km IS NULL THEN 1 ELSE 0 END,
+      distance_km,
       CASE WHEN name IS NULL THEN 1 ELSE 0 END,
       name
     LIMIT ${filters.limit}
@@ -631,12 +691,15 @@ function buildFacilitiesGridSql(table: LakebaseTableReference, columns: Resolved
       source_urls,
       last_updated,
       latitude,
-      longitude
+      longitude,
+      ${lakebaseDistanceExpression()} AS distance_km
     FROM filtered
     ORDER BY
+      CASE WHEN distance_km IS NULL THEN 1 ELSE 0 END,
+      distance_km,
       CASE WHEN name IS NULL THEN 1 ELSE 0 END,
       name
-    LIMIT $6
+    LIMIT $8
   `;
 }
 
@@ -780,6 +843,7 @@ function serializeFacilityGridRow(row: FacilityGridRow) {
     name: row.name ?? 'Unnamed facility',
     latitude: row.latitude === null ? null : toNumber(row.latitude),
     longitude: row.longitude === null ? null : toNumber(row.longitude),
+    distance_km: row.distance_km === null ? null : toNumber(row.distance_km),
   };
 }
 
@@ -834,6 +898,17 @@ async function setupUsageAnalytics(lakebaseQuery: LakebaseQuery) {
     CREATE INDEX IF NOT EXISTS idx_usage_events_type_created_at
       ON app_usage.events(event_type, created_at DESC);
   `);
+}
+
+let usageAnalyticsSetupPromise: Promise<void> | null = null;
+
+function ensureUsageAnalytics(lakebaseQuery: LakebaseQuery) {
+  usageAnalyticsSetupPromise ??= setupUsageAnalytics(lakebaseQuery).catch((error: unknown) => {
+    usageAnalyticsSetupPromise = null;
+    throw error;
+  });
+
+  return usageAnalyticsSetupPromise;
 }
 
 function serializeUsageEvent(row: UsageEventRow) {
@@ -956,7 +1031,9 @@ function cleanResultValue(value: unknown): string {
   if (value === null || value === undefined) return '';
   if (Array.isArray(value)) return value.map(cleanResultValue).filter(Boolean).join(', ');
   if (typeof value === 'object') return JSON.stringify(value);
-  return String(value).trim();
+  if (typeof value === 'string') return value.trim();
+  if (typeof value === 'number' || typeof value === 'boolean' || typeof value === 'bigint') return String(value).trim();
+  return '';
 }
 
 function getRawField(row: Record<string, unknown>, candidates: string[]) {
@@ -1056,9 +1133,11 @@ createApp({
       },
     }),
   ],
-  async onPluginsReady(appkit) {
+  onPluginsReady(appkit) {
     const lakebaseQuery: LakebaseQuery = (text, values) => appkit.lakebase.query(text, values);
-    await setupUsageAnalytics(lakebaseQuery);
+    void ensureUsageAnalytics(lakebaseQuery).catch((error: unknown) => {
+      console.error(error instanceof Error ? error.message : 'Unable to set up usage analytics.');
+    });
 
     appkit.server.extend((app) => {
       app.get('/api/whoami', (req, res) => {
@@ -1070,6 +1149,8 @@ createApp({
 
       app.post('/api/usage/events', async (req, res) => {
         try {
+          await ensureUsageAnalytics(lakebaseQuery);
+
           const body = isRecord(req.body) ? req.body : {};
           const sessionId = cleanUsageString(body.sessionId, '', 64);
           const eventType = cleanUsageString(body.eventType, '', 120);
@@ -1127,6 +1208,8 @@ createApp({
 
       app.get('/api/usage/analytics', async (_req, res) => {
         try {
+          await ensureUsageAnalytics(lakebaseQuery);
+
           const [summaryResult, actionsResult, pagesResult, dailyResult, recentResult, sessionsResult] = await Promise.all([
             lakebaseQuery<{
               total_events: number | string;
@@ -1329,6 +1412,8 @@ createApp({
           specialty: normalizedLowerParam(req.query.specialty, 'all'),
           procedure: normalizedLowerParam(req.query.procedure, 'all'),
           limit: toSafeLimitParam(req.query.limit),
+          patientLatitude: toSafeCoordinateParam(req.query.patient_latitude, -90, 90),
+          patientLongitude: toSafeCoordinateParam(req.query.patient_longitude, -180, 180),
         };
 
         try {
@@ -1357,6 +1442,8 @@ createApp({
           const [facilitiesResult, countResult, filterOptionsResult] = await Promise.all([
             lakebaseQuery<FacilityGridRow>(buildFacilitiesGridSql(source.table, source.columns), [
               ...parameters,
+              filters.patientLatitude,
+              filters.patientLongitude,
               filters.limit,
             ]),
             lakebaseQuery<FacilityCountRow>(buildFacilitiesCountSql(source.table, source.columns), parameters),

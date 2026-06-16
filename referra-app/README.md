@@ -1,4 +1,4 @@
-# bakehouse-genie
+# referra-app
 
 A Databricks App powered by [AppKit](https://www.databricks.com/devhub/docs/appkit/v0/), featuring React, TypeScript, and Tailwind CSS.
 
@@ -62,7 +62,7 @@ client_secret = prod-client-secret
 Deploy using a specific profile:
 
 ```bash
-databricks bundle deploy --profile production
+databricks apps deploy -t default --profile DAIS-NEW
 ```
 
 **Note:** Personal Access Tokens (PATs) are legacy authentication. OAuth is strongly recommended for better security.
@@ -123,7 +123,13 @@ npm run format
 npm run format:fix
 ```
 
-## Deployment with Databricks Asset Bundles
+## Deployment To Databricks Apps
+
+This project targets the `DAIS-NEW` Databricks CLI profile:
+
+- Workspace: `https://dbc-4745c1e0-06b0.cloud.databricks.com`
+- Bundle target: `default`
+- App name: `referra-app`
 
 ### 1. Configure Bundle
 
@@ -141,33 +147,18 @@ Make sure to replace all placeholder values in `databricks.yml` with your actual
 ### 2. Validate Bundle
 
 ```bash
-databricks bundle validate
+databricks apps validate --profile DAIS-NEW
 ```
 
 ### 3. Deploy
 
-Deploy to the default target:
-
 ```bash
-databricks bundle deploy
+databricks apps deploy -t default --profile DAIS-NEW
 ```
 
-### 4. Run
+### 4. Verify
 
-Start the deployed app:
-
-```bash
-databricks bundle run <APP_NAME> -t dev
-```
-
-### Deploy to Production
-
-1. Configure the production target in `databricks.yml`
-2. Deploy to production:
-
-```bash
-databricks bundle deploy -t prod
-```
+Use `databricks apps get referra-app --profile DAIS-NEW` to check the app status after deployment.
 
 ## Project Structure
 

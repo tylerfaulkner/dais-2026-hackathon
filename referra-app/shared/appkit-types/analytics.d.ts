@@ -7,7 +7,14 @@ declare module "@databricks/appkit-ui/react" {
   interface QueryRegistry {
     nfhs_district_health_indicators: {
         name: "nfhs_district_health_indicators";
-        parameters: Record<string, never>;
+        parameters: {
+          /** STRING - use sql.string() */
+          state: SQLStringMarker;
+          /** STRING - use sql.string() */
+          search: SQLStringMarker;
+          /** INT - use sql.int() */
+          limit: SQLNumberMarker;
+        };
         result: Array<{
           /** @sqlType STRING */
           districtName: string;
@@ -15,12 +22,6 @@ declare module "@databricks/appkit-ui/react" {
           state: string;
           /** @sqlType BIGINT */
           householdsSurveyed: number;
-          /** @sqlType BIGINT */
-          womenInterviewed: number;
-          /** @sqlType BIGINT */
-          menInterviewed: number;
-          /** @sqlType DOUBLE */
-          improvedWaterPct: number;
           /** @sqlType DOUBLE */
           improvedSanitationPct: number;
           /** @sqlType DOUBLE */
@@ -34,11 +35,41 @@ declare module "@databricks/appkit-ui/react" {
           /** @sqlType DOUBLE */
           skilledBirthAttendancePct: number;
           /** @sqlType DOUBLE */
-          cSectionPct: number;
-          /** @sqlType DOUBLE */
           childStuntedPct: number;
           /** @sqlType DOUBLE */
-          childWastedPct: number;
+          childUnderweightPct: number;
+          /** @sqlType DOUBLE */
+          womenAnaemiaPct: number;
+          /** @sqlType DOUBLE */
+          womenHighBpPct: number;
+          /** @sqlType DOUBLE */
+          menHighBpPct: number;
+        }>;
+      };
+    nfhs_state_health_indicators: {
+        name: "nfhs_state_health_indicators";
+        parameters: Record<string, never>;
+        result: Array<{
+          /** @sqlType STRING */
+          state: string;
+          /** @sqlType BIGINT */
+          districts: number;
+          /** @sqlType BIGINT */
+          householdsSurveyed: number;
+          /** @sqlType DOUBLE */
+          improvedSanitationPct: number;
+          /** @sqlType DOUBLE */
+          cleanFuelPct: number;
+          /** @sqlType DOUBLE */
+          healthInsurancePct: number;
+          /** @sqlType DOUBLE */
+          womenLiteracyPct: number;
+          /** @sqlType DOUBLE */
+          institutionalBirthPct: number;
+          /** @sqlType DOUBLE */
+          skilledBirthAttendancePct: number;
+          /** @sqlType DOUBLE */
+          childStuntedPct: number;
           /** @sqlType DOUBLE */
           childUnderweightPct: number;
           /** @sqlType DOUBLE */

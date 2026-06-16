@@ -1,11 +1,6 @@
--- Capped district-level NFHS rows.
--- Executes through the AppKit analytics plugin against the configured Databricks SQL Warehouse.
--- @param state STRING
--- @param search STRING
--- @param limit INT
+-- State-level NFHS metrics. Keep result size small for AppKit streaming.
 WITH parsed AS (
   SELECT
-    district_name AS districtName,
     state_ut AS state,
     TRY_CAST(NULLIF(REGEXP_EXTRACT(REGEXP_REPLACE(CAST(households_surveyed AS STRING), ',', ''), '[-+]?[0-9]+([.][0-9]+)?', 0), '') AS DOUBLE) AS households_surveyed,
     TRY_CAST(NULLIF(REGEXP_EXTRACT(REGEXP_REPLACE(CAST(hh_use_improved_sanitation_pct AS STRING), ',', ''), '[-+]?[0-9]+([.][0-9]+)?', 0), '') AS DOUBLE) AS improvedSanitationPct,
@@ -20,33 +15,24 @@ WITH parsed AS (
     TRY_CAST(NULLIF(REGEXP_EXTRACT(REGEXP_REPLACE(CAST(w15_plus_with_high_bp_sys_gte_140_mmhg_and_or_dia_gte_90_mm_pct AS STRING), ',', ''), '[-+]?[0-9]+([.][0-9]+)?', 0), '') AS DOUBLE) AS womenHighBpPct,
     TRY_CAST(NULLIF(REGEXP_EXTRACT(REGEXP_REPLACE(CAST(m15_plus_with_high_bp_sys_gte_140_mmhg_and_or_dia_gte_90_mm_pct AS STRING), ',', ''), '[-+]?[0-9]+([.][0-9]+)?', 0), '') AS DOUBLE) AS menHighBpPct
   FROM virtue_foundation_dataset.bronze.nfhs_5_district_health_indicators
-  WHERE district_name IS NOT NULL
-    AND state_ut IS NOT NULL
-),
-filtered AS (
-  SELECT *
-  FROM parsed
-  WHERE (:state = '' OR state = :state)
-    AND (
-      :search = ''
-      OR LOWER(CONCAT_WS(' ', state, districtName)) LIKE CONCAT('%', LOWER(:search), '%')
-    )
+  WHERE state_ut IS NOT NULL
+    AND district_name IS NOT NULL
 )
 SELECT
-  districtName,
   state,
-  CAST(households_surveyed AS BIGINT) AS householdsSurveyed,
-  improvedSanitationPct,
-  cleanFuelPct,
-  healthInsurancePct,
-  womenLiteracyPct,
-  institutionalBirthPct,
-  skilledBirthAttendancePct,
-  childStuntedPct,
-  childUnderweightPct,
-  womenAnaemiaPct,
-  womenHighBpPct,
-  menHighBpPct
-FROM filtered
-ORDER BY state, districtName
-LIMIT :limit
+  COUNT(*) AS districts,
+  CAST(SUM(households_surveyed) AS BIGINT) AS householdsSurveyed,
+  AVG(improvedSanitationPct) AS improvedSanitationPct,
+  AVG(cleanFuelPct) AS cleanFuelPct,
+  AVG(healthInsurancePct) AS healthInsurancePct,
+  AVG(womenLiteracyPct) AS womenLiteracyPct,
+  AVG(institutionalBirthPct) AS institutionalBirthPct,
+  AVG(skilledBirthAttendancePct) AS skilledBirthAttendancePct,
+  AVG(childStuntedPct) AS childStuntedPct,
+  AVG(childUnderweightPct) AS childUnderweightPct,
+  AVG(womenAnaemiaPct) AS womenAnaemiaPct,
+  AVG(womenHighBpPct) AS womenHighBpPct,
+  AVG(menHighBpPct) AS menHighBpPct
+FROM parsed
+GROUP BY state
+ORDER BY state

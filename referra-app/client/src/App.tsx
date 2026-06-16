@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -21,12 +21,15 @@ type Page = 'genie' | 'clinics' | 'nfhs' | 'usage';
 type Theme = 'light' | 'dark';
 type InsuranceStatus = 'insured' | 'uninsured' | 'unsure';
 type IncomeLevel = 'low' | 'middle' | 'high' | 'prefer-not-to-say';
+type Gender = 'female' | 'male' | 'nonbinary' | 'prefer-not-to-say';
 
 interface SessionProfile {
   latitude: number;
   longitude: number;
   insuranceStatus: InsuranceStatus;
   incomeLevel: IncomeLevel;
+  gender: Gender;
+  age: number;
   selectedAt: string;
 }
 
@@ -35,6 +38,8 @@ interface SessionProfileDraft {
   longitude: number | null;
   insuranceStatus: InsuranceStatus | null;
   incomeLevel: IncomeLevel | null;
+  gender: Gender | null;
+  age: number | null;
 }
 
 interface CompleteSessionProfileDraft {
@@ -42,6 +47,8 @@ interface CompleteSessionProfileDraft {
   longitude: number;
   insuranceStatus: InsuranceStatus;
   incomeLevel: IncomeLevel;
+  gender: Gender;
+  age: number;
 }
 
 const indiaCenter: [number, number] = [22.9734, 78.6569];
@@ -71,6 +78,13 @@ const incomeOptions: Array<{ value: IncomeLevel; label: string }> = [
   { value: 'prefer-not-to-say', label: 'Prefer not to say' },
 ];
 
+const genderOptions: Array<{ value: Gender; label: string }> = [
+  { value: 'female', label: 'Female' },
+  { value: 'male', label: 'Male' },
+  { value: 'nonbinary', label: 'Nonbinary' },
+  { value: 'prefer-not-to-say', label: 'Prefer not to say' },
+];
+
 function getInitialTheme(): Theme {
   if (typeof window === 'undefined') return 'light';
 
@@ -96,6 +110,14 @@ function isIncomeLevel(value: unknown): value is IncomeLevel {
   return value === 'low' || value === 'middle' || value === 'high' || value === 'prefer-not-to-say';
 }
 
+function isGender(value: unknown): value is Gender {
+  return value === 'female' || value === 'male' || value === 'nonbinary' || value === 'prefer-not-to-say';
+}
+
+function isValidAge(value: number) {
+  return Number.isInteger(value) && value >= 0 && value <= 120;
+}
+
 function getInitialSessionProfile(): SessionProfile | null {
   if (typeof window === 'undefined') return null;
 
@@ -106,15 +128,19 @@ function getInitialSessionProfile(): SessionProfile | null {
     const parsedProfile = JSON.parse(storedProfile) as Partial<SessionProfile>;
     const latitude = Number(parsedProfile.latitude);
     const longitude = Number(parsedProfile.longitude);
+    const age = Number(parsedProfile.age);
 
     if (!isValidLatitude(latitude) || !isValidLongitude(longitude)) return null;
     if (!isInsuranceStatus(parsedProfile.insuranceStatus) || !isIncomeLevel(parsedProfile.incomeLevel)) return null;
+    if (!isGender(parsedProfile.gender) || !isValidAge(age)) return null;
 
     return {
       latitude,
       longitude,
       insuranceStatus: parsedProfile.insuranceStatus,
       incomeLevel: parsedProfile.incomeLevel,
+      gender: parsedProfile.gender,
+      age,
       selectedAt: typeof parsedProfile.selectedAt === 'string' ? parsedProfile.selectedAt : new Date().toISOString(),
     };
   } catch {
@@ -135,8 +161,13 @@ function formatOption<T extends string>(options: Array<{ value: T; label: string
   return options.find((option) => option.value === value)?.label ?? value;
 }
 
-function formatPatientAttributes(profile: Pick<SessionProfile, 'insuranceStatus' | 'incomeLevel'>) {
-  return `${formatOption(insuranceOptions, profile.insuranceStatus)} - ${formatOption(incomeOptions, profile.incomeLevel)}`;
+function formatPatientAttributes(profile: Pick<SessionProfile, 'insuranceStatus' | 'incomeLevel' | 'gender' | 'age'>) {
+  return [
+    formatOption(insuranceOptions, profile.insuranceStatus),
+    formatOption(incomeOptions, profile.incomeLevel),
+    formatOption(genderOptions, profile.gender),
+    `${profile.age} years old`,
+  ].join(' - ');
 }
 
 function createEmptyDraft(): SessionProfileDraft {
@@ -145,6 +176,8 @@ function createEmptyDraft(): SessionProfileDraft {
     longitude: null,
     insuranceStatus: null,
     incomeLevel: null,
+    gender: null,
+    age: null,
   };
 }
 
@@ -156,6 +189,8 @@ function createDraftFromProfile(profile: SessionProfile | null): SessionProfileD
     longitude: profile.longitude,
     insuranceStatus: profile.insuranceStatus,
     incomeLevel: profile.incomeLevel,
+    gender: profile.gender,
+    age: profile.age,
   };
 }
 
@@ -166,7 +201,10 @@ function isCompleteDraft(draft: SessionProfileDraft): draft is CompleteSessionPr
     isValidLatitude(draft.latitude) &&
     isValidLongitude(draft.longitude) &&
     draft.insuranceStatus !== null &&
-    draft.incomeLevel !== null
+    draft.incomeLevel !== null &&
+    draft.gender !== null &&
+    draft.age !== null &&
+    isValidAge(draft.age)
   );
 }
 
@@ -241,6 +279,8 @@ function LocationSelectorDialog({
       longitude: draftProfile.longitude,
       insuranceStatus: draftProfile.insuranceStatus,
       incomeLevel: draftProfile.incomeLevel,
+      gender: draftProfile.gender,
+      age: draftProfile.age,
       selectedAt: new Date().toISOString(),
     });
   };
@@ -338,6 +378,46 @@ function LocationSelectorDialog({
                   ))}
                 </div>
               </fieldset>
+              <fieldset>
+                <legend className="text-xs text-muted-foreground">Gender</legend>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {genderOptions.map((option) => (
+                    <button
+                      aria-pressed={draftProfile.gender === option.value}
+                      className={cn(
+                        'inline-flex h-8 items-center rounded-md border px-2.5 text-xs font-medium transition-colors',
+                        draftProfile.gender === option.value
+                          ? 'border-primary bg-primary text-primary-foreground'
+                          : 'bg-background hover:bg-muted'
+                      )}
+                      key={option.value}
+                      onClick={() => onDraftProfileChange({ gender: option.value })}
+                      type="button"
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+              </fieldset>
+              <label className="block">
+                <span className="block text-xs text-muted-foreground">Age</span>
+                <input
+                  aria-label="Patient age"
+                  className="mt-2 h-9 w-28 rounded-md border bg-background px-2 text-sm tabular-nums"
+                  inputMode="numeric"
+                  max={120}
+                  min={0}
+                  onChange={(event) => {
+                    const nextAge = event.target.value ? Number(event.target.value) : null;
+                    onDraftProfileChange({
+                      age: nextAge !== null && Number.isFinite(nextAge) ? Math.trunc(nextAge) : null,
+                    });
+                  }}
+                  placeholder="Age"
+                  type="number"
+                  value={draftProfile.age ?? ''}
+                />
+              </label>
             </div>
             <div className="flex shrink-0 items-end justify-end gap-2">
               {selectedProfile ? (
@@ -380,19 +460,25 @@ export default function App() {
   const logAction = useCallback((event: UsageLogEvent) => {
     logUsageAction(event);
   }, []);
+  const initialSessionLog = useRef({
+    page: activePage,
+    hasPatientDetails: Boolean(profileState.selectedProfile),
+  });
 
   useEffect(() => {
+    const { page, hasPatientDetails } = initialSessionLog.current;
+
     logAction({
       eventType: 'session_start',
-      page: activePage,
+      page,
       targetType: 'session',
       targetId: getUsageSessionId(),
       properties: {
-        initialPage: activePage,
-        hasPatientDetails: Boolean(profileState.selectedProfile),
+        initialPage: page,
+        hasPatientDetails,
       },
     });
-  }, []);
+  }, [logAction]);
 
   useEffect(() => {
     logAction({
@@ -431,6 +517,8 @@ export default function App() {
         longitude: profile.longitude,
         insuranceStatus: profile.insuranceStatus,
         incomeLevel: profile.incomeLevel,
+        gender: profile.gender,
+        age: profile.age,
       },
     });
   };
@@ -505,7 +593,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-muted/30 text-foreground">
       <header className="border-b bg-background">
-        <div className="mx-auto flex max-w-[96rem] flex-col gap-4 px-2 py-4 md:px-3">
+        <div className="mx-auto flex max-w-[96rem] flex-col gap-4 px-4 py-4 md:px-6 lg:px-8">
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div className="flex min-w-0 items-center gap-3">
               <img
@@ -582,9 +670,9 @@ export default function App() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-[96rem] px-2 py-5 md:px-3">
+      <main className="mx-auto max-w-[96rem] px-4 py-5 md:px-6 lg:px-8">
         {activePage === 'genie' ? <GeniePage audienceMode="patients" selectedLocation={selectedProfile} theme={theme} logAction={logAction} /> : null}
-        {activePage === 'clinics' ? <ClinicsPage logAction={logAction} /> : null}
+        {activePage === 'clinics' ? <ClinicsPage selectedLocation={selectedProfile} logAction={logAction} /> : null}
         {activePage === 'nfhs' ? <NfhsPage theme={theme} /> : null}
         {activePage === 'usage' ? <UsagePage /> : null}
       </main>

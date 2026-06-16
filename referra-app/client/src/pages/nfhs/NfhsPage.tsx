@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Badge, Card, CardContent, CardHeader, CardTitle, Input, Skeleton, useAnalyticsQuery } from '@databricks/appkit-ui/react';
+import { sql } from '@databricks/appkit-ui/js';
 import type { Feature, FeatureCollection, Geometry } from 'geojson';
 import { Activity, AlertCircle, ListFilter, MapPinned, Search } from 'lucide-react';
 import L from 'leaflet';
@@ -9,30 +10,36 @@ import { cn } from '../../lib/utils';
 
 type Theme = 'light' | 'dark';
 
-interface NfhsDistrict {
-  districtName: string;
-  state: string;
-  householdsSurveyed: number | null;
-  womenInterviewed: number | null;
-  menInterviewed: number | null;
-  improvedWaterPct: number | null;
+interface NfhsMetricValues {
   improvedSanitationPct: number | null;
   cleanFuelPct: number | null;
   healthInsurancePct: number | null;
   womenLiteracyPct: number | null;
   institutionalBirthPct: number | null;
   skilledBirthAttendancePct: number | null;
-  cSectionPct: number | null;
   childStuntedPct: number | null;
-  childWastedPct: number | null;
   childUnderweightPct: number | null;
   womenAnaemiaPct: number | null;
   womenHighBpPct: number | null;
   menHighBpPct: number | null;
 }
 
+interface NfhsDistrict extends NfhsMetricValues {
+  districtName: string;
+  state: string;
+  householdsSurveyed: number | null;
+}
+
+interface NfhsStateMetric extends NfhsMetricValues {
+  state: string;
+  districts: number;
+  householdsSurveyed: number | null;
+}
+
+type IndicatorKey = keyof NfhsMetricValues;
+
 interface Indicator {
-  key: keyof NfhsDistrict;
+  key: IndicatorKey;
   label: string;
   shortLabel: string;
   higherIsBetter: boolean;
@@ -42,7 +49,7 @@ interface StateSummary {
   state: string;
   latitude: number;
   longitude: number;
-  districts: NfhsDistrict[];
+  districts: number;
   value: number | null;
   surveyedHouseholds: number;
   boundary: BoundaryFeature | null;
@@ -57,7 +64,7 @@ type BoundaryFeature = Feature<Geometry, BoundaryProperties>;
 
 const indiaCenter: [number, number] = [22.9734, 78.6569];
 const numberFormatter = new Intl.NumberFormat('en-IN');
-const nfhsQueryParameters = {};
+const districtQueryLimit = 120;
 
 const indicators: Indicator[] = [
   { key: 'institutionalBirthPct', label: 'Institutional births', shortLabel: 'Institutional births', higherIsBetter: true },
@@ -72,6 +79,10 @@ const indicators: Indicator[] = [
   { key: 'womenHighBpPct', label: 'Women 15+ with high blood pressure', shortLabel: 'Women high BP', higherIsBetter: false },
   { key: 'menHighBpPct', label: 'Men 15+ with high blood pressure', shortLabel: 'Men high BP', higherIsBetter: false },
 ];
+
+function isIndicatorKey(value: string): value is IndicatorKey {
+  return indicators.some((indicator) => indicator.key === value);
+}
 
 const stateCentroids: Record<string, [number, number]> = {
   'Andaman & Nicobar Islands': [11.7401, 92.6586],
@@ -131,18 +142,13 @@ function normalizeDistrict(row: {
   districtName?: unknown;
   state?: unknown;
   householdsSurveyed?: unknown;
-  womenInterviewed?: unknown;
-  menInterviewed?: unknown;
-  improvedWaterPct?: unknown;
   improvedSanitationPct?: unknown;
   cleanFuelPct?: unknown;
   healthInsurancePct?: unknown;
   womenLiteracyPct?: unknown;
   institutionalBirthPct?: unknown;
   skilledBirthAttendancePct?: unknown;
-  cSectionPct?: unknown;
   childStuntedPct?: unknown;
-  childWastedPct?: unknown;
   childUnderweightPct?: unknown;
   womenAnaemiaPct?: unknown;
   womenHighBpPct?: unknown;
@@ -152,18 +158,47 @@ function normalizeDistrict(row: {
     districtName: toText(row.districtName),
     state: toText(row.state),
     householdsSurveyed: toNumber(row.householdsSurveyed),
-    womenInterviewed: toNumber(row.womenInterviewed),
-    menInterviewed: toNumber(row.menInterviewed),
-    improvedWaterPct: toNumber(row.improvedWaterPct),
     improvedSanitationPct: toNumber(row.improvedSanitationPct),
     cleanFuelPct: toNumber(row.cleanFuelPct),
     healthInsurancePct: toNumber(row.healthInsurancePct),
     womenLiteracyPct: toNumber(row.womenLiteracyPct),
     institutionalBirthPct: toNumber(row.institutionalBirthPct),
     skilledBirthAttendancePct: toNumber(row.skilledBirthAttendancePct),
-    cSectionPct: toNumber(row.cSectionPct),
     childStuntedPct: toNumber(row.childStuntedPct),
-    childWastedPct: toNumber(row.childWastedPct),
+    childUnderweightPct: toNumber(row.childUnderweightPct),
+    womenAnaemiaPct: toNumber(row.womenAnaemiaPct),
+    womenHighBpPct: toNumber(row.womenHighBpPct),
+    menHighBpPct: toNumber(row.menHighBpPct),
+  };
+}
+
+function normalizeStateMetric(row: {
+  state?: unknown;
+  districts?: unknown;
+  householdsSurveyed?: unknown;
+  improvedSanitationPct?: unknown;
+  cleanFuelPct?: unknown;
+  healthInsurancePct?: unknown;
+  womenLiteracyPct?: unknown;
+  institutionalBirthPct?: unknown;
+  skilledBirthAttendancePct?: unknown;
+  childStuntedPct?: unknown;
+  childUnderweightPct?: unknown;
+  womenAnaemiaPct?: unknown;
+  womenHighBpPct?: unknown;
+  menHighBpPct?: unknown;
+}): NfhsStateMetric {
+  return {
+    state: toText(row.state),
+    districts: toNumber(row.districts) ?? 0,
+    householdsSurveyed: toNumber(row.householdsSurveyed),
+    improvedSanitationPct: toNumber(row.improvedSanitationPct),
+    cleanFuelPct: toNumber(row.cleanFuelPct),
+    healthInsurancePct: toNumber(row.healthInsurancePct),
+    womenLiteracyPct: toNumber(row.womenLiteracyPct),
+    institutionalBirthPct: toNumber(row.institutionalBirthPct),
+    skilledBirthAttendancePct: toNumber(row.skilledBirthAttendancePct),
+    childStuntedPct: toNumber(row.childStuntedPct),
     childUnderweightPct: toNumber(row.childUnderweightPct),
     womenAnaemiaPct: toNumber(row.womenAnaemiaPct),
     womenHighBpPct: toNumber(row.womenHighBpPct),
@@ -247,21 +282,10 @@ function FitMapToStates({ states }: { states: StateSummary[] }) {
   return null;
 }
 
-function aggregateStates(
-  districts: NfhsDistrict[],
-  indicator: Indicator,
-  boundaries: Map<string, BoundaryFeature>
-) {
-  const grouped = new Map<string, NfhsDistrict[]>();
-
-  districts.forEach((district) => {
-    const districtsForState = grouped.get(district.state) ?? [];
-    districtsForState.push(district);
-    grouped.set(district.state, districtsForState);
-  });
-
-  return [...grouped.entries()]
-    .map(([state, stateDistricts]) => {
+function createStateSummaries(states: NfhsStateMetric[], indicator: Indicator, boundaries: Map<string, BoundaryFeature>) {
+  return states
+    .map((stateMetric) => {
+      const { state } = stateMetric;
       const centroid = stateCentroids[state];
       if (!centroid) return null;
 
@@ -269,9 +293,9 @@ function aggregateStates(
         state,
         latitude: centroid[0],
         longitude: centroid[1],
-        districts: stateDistricts,
-        value: average(stateDistricts.map((district) => district[indicator.key] as number | null)),
-        surveyedHouseholds: stateDistricts.reduce((sum, district) => sum + (district.householdsSurveyed ?? 0), 0),
+        districts: stateMetric.districts,
+        value: stateMetric[indicator.key],
+        surveyedHouseholds: stateMetric.householdsSurveyed ?? 0,
         boundary: getStateBoundary(state, boundaries),
       };
     })
@@ -280,11 +304,14 @@ function aggregateStates(
 }
 
 export function NfhsPage({ theme }: { theme: Theme }) {
-  const { data, loading, error } = useAnalyticsQuery('nfhs_district_health_indicators', nfhsQueryParameters);
   const [selectedIndicatorKey, setSelectedIndicatorKey] = useState<Indicator['key']>('institutionalBirthPct');
   const [selectedState, setSelectedState] = useState<string>('');
   const [query, setQuery] = useState('');
   const [stateBoundaries, setStateBoundaries] = useState<FeatureCollection<Geometry, BoundaryProperties> | null>(null);
+  const selectedIndicator = indicators.find((indicator) => indicator.key === selectedIndicatorKey) ?? indicators[0];
+  const normalizedQuery = query.trim();
+  const stateQueryParameters = useMemo(() => ({}), []);
+  const { data: stateData, loading: statesLoading, error: statesError } = useAnalyticsQuery('nfhs_state_health_indicators', stateQueryParameters);
 
   useEffect(() => {
     let cancelled = false;
@@ -310,37 +337,45 @@ export function NfhsPage({ theme }: { theme: Theme }) {
     };
   }, []);
 
-  const districts = useMemo(
-    () =>
-      (data ?? [])
-        .map(normalizeDistrict)
-        .filter((district) => district.districtName && district.state),
-    [data]
-  );
-
-  const selectedIndicator = indicators.find((indicator) => indicator.key === selectedIndicatorKey) ?? indicators[0];
-  const normalizedQuery = query.trim().toLowerCase();
   const boundaryByStateName = useMemo(
     () => (stateBoundaries ? createBoundaryLookup(stateBoundaries) : new Map<string, BoundaryFeature>()),
     [stateBoundaries]
   );
 
-  const filteredDistricts = useMemo(() => {
-    if (!normalizedQuery) return districts;
-    return districts.filter((district) =>
-      `${district.state} ${district.districtName}`.toLowerCase().includes(normalizedQuery)
-    );
-  }, [districts, normalizedQuery]);
-
   const stateSummaries = useMemo(
-    () => aggregateStates(filteredDistricts, selectedIndicator, boundaryByStateName),
-    [boundaryByStateName, filteredDistricts, selectedIndicator]
+    () =>
+      createStateSummaries(
+        (stateData ?? []).map(normalizeStateMetric).filter((stateMetric) => stateMetric.state),
+        selectedIndicator,
+        boundaryByStateName
+      ),
+    [boundaryByStateName, selectedIndicator, stateData]
   );
 
   const activeState = stateSummaries.find((summary) => summary.state === selectedState) ?? stateSummaries[0];
+  const districtQueryParameters = useMemo(
+    () => ({
+      state: sql.string(activeState?.state ?? ''),
+      search: sql.string(normalizedQuery),
+      limit: sql.number(districtQueryLimit),
+    }),
+    [activeState?.state, normalizedQuery]
+  );
+  const {
+    data: districtData,
+    loading: districtsLoading,
+    error: districtsError,
+  } = useAnalyticsQuery('nfhs_district_health_indicators', districtQueryParameters);
+  const districts = useMemo(
+    () =>
+      (districtData ?? [])
+        .map(normalizeDistrict)
+        .filter((district) => district.districtName && district.state),
+    [districtData]
+  );
+
   const rankedDistricts = useMemo(() => {
-    const source = activeState?.districts ?? filteredDistricts;
-    return [...source]
+    return [...districts]
       .filter((district) => district[selectedIndicator.key] !== null)
       .sort((a, b) => {
         const aValue = a[selectedIndicator.key] as number;
@@ -348,9 +383,11 @@ export function NfhsPage({ theme }: { theme: Theme }) {
         return selectedIndicator.higherIsBetter ? bValue - aValue : aValue - bValue;
       })
       .slice(0, 8);
-  }, [activeState, filteredDistricts, selectedIndicator]);
+  }, [districts, selectedIndicator]);
 
-  const nationalAverage = average(filteredDistricts.map((district) => district[selectedIndicator.key] as number | null));
+  const nationalAverage = average(stateSummaries.map((state) => state.value));
+  const loading = statesLoading || districtsLoading;
+  const error = statesError ?? districtsError;
 
   return (
     <div className="grid h-[calc(100vh-180px)] min-h-0 gap-3 overflow-hidden xl:grid-cols-[minmax(0,1fr)_320px]">
@@ -370,7 +407,11 @@ export function NfhsPage({ theme }: { theme: Theme }) {
                   aria-label="Choose health indicator"
                   className="h-10 w-full rounded-md border bg-background pl-9 pr-3 text-sm"
                   value={selectedIndicatorKey}
-                  onChange={(event) => setSelectedIndicatorKey(event.target.value as Indicator['key'])}
+                  onChange={(event) => {
+                    if (isIndicatorKey(event.target.value)) {
+                      setSelectedIndicatorKey(event.target.value);
+                    }
+                  }}
                 >
                   {indicators.map((indicator) => (
                     <option key={indicator.key} value={indicator.key}>
@@ -420,7 +461,7 @@ export function NfhsPage({ theme }: { theme: Theme }) {
                   <CardTitle className="text-sm text-muted-foreground">Districts</CardTitle>
                 </CardHeader>
                 <CardContent className="px-3 pb-2 text-xl font-semibold tabular-nums">
-                  {numberFormatter.format(filteredDistricts.length)}
+                  {numberFormatter.format(activeState?.districts ?? districts.length)}
                 </CardContent>
               </Card>
               <Card>
@@ -483,8 +524,8 @@ export function NfhsPage({ theme }: { theme: Theme }) {
                         <Popup autoPan autoPanPadding={[48, 48]} keepInView>
                           <div className="clinic-map-popup">
                             <div className="font-medium">{state.state}</div>
-                            <div className="mt-1 text-xs text-muted-foreground">
-                              {numberFormatter.format(state.districts.length)} districts
+                <div className="mt-1 text-xs text-muted-foreground">
+                              {numberFormatter.format(state.districts)} districts
                             </div>
                             <div className="mt-3 text-sm">
                               {selectedIndicator.shortLabel}: <strong>{formatPct(state.value)}</strong>
@@ -532,7 +573,7 @@ export function NfhsPage({ theme }: { theme: Theme }) {
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <div className="text-muted-foreground">Districts</div>
-                <div className="mt-1 font-medium tabular-nums">{numberFormatter.format(activeState?.districts.length ?? 0)}</div>
+                <div className="mt-1 font-medium tabular-nums">{numberFormatter.format(activeState?.districts ?? 0)}</div>
               </div>
               <div>
                 <div className="text-muted-foreground">Households</div>
@@ -567,7 +608,7 @@ export function NfhsPage({ theme }: { theme: Theme }) {
               >
                 <div className="flex items-center justify-between gap-3">
                   <span className="truncate font-medium">{district.districtName}</span>
-                  <Badge variant="secondary">{formatPct(district[selectedIndicator.key] as number | null)}</Badge>
+                  <Badge variant="secondary">{formatPct(district[selectedIndicator.key])}</Badge>
                 </div>
                 <div className="mt-1 text-xs text-muted-foreground">{district.state}</div>
               </button>

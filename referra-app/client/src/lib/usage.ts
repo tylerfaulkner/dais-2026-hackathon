@@ -2,7 +2,7 @@ export type UsagePage = 'genie' | 'clinics' | 'nfhs' | 'usage';
 
 export interface UsageLogEvent {
   eventType: string;
-  page?: UsagePage | string;
+  page?: string;
   targetType?: string;
   targetId?: string;
   properties?: Record<string, unknown>;
